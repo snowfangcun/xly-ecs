@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { themeKey } from '@/common/key'
 import { defineProps, provide } from 'vue'
 
 export interface Theme {
@@ -10,9 +11,9 @@ export interface Theme {
 
 const props = defineProps<{ theme: Theme }>()
 
-provide('theme', props)
+provide(themeKey, props.theme)
 </script>
 
 <template>
-  <div></div>
+  <slot />
 </template>

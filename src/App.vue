@@ -3,10 +3,11 @@ import { onMounted, ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { startGame } from './game/Index'
 import ThemeProvider, { type Theme } from './components/ThemeProvider.vue'
+import ClickText from './components/ClickText.vue'
 
 const theme = ref<Theme>({
   clickText: {
-    textColor: '#fff',
+    textColor: '#1d953f',
     textSize: 20,
   },
 })
@@ -18,6 +19,7 @@ onMounted(() => {
 
 <template>
   <ThemeProvider :theme="theme">
+    <ClickText text="点击开始游戏" @click="() => console.log('点击开始游戏')" />
     <RouterView />
   </ThemeProvider>
 </template>
