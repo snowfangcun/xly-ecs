@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@esengine/ecs-framework'
-import type { BaseEffect } from '../effect/Effect'
+import { EffectAddExp, type BaseEffect } from '../effect/Effect'
 import { PlayerCoreComp } from '../Player'
 
 export abstract class BaseGongfa<T extends object> {
@@ -32,25 +32,26 @@ export class GongfaChangChunGong extends BaseGongfa<ChangChunGongData> {
     return { duration: 0 }
   }
   execute(): BaseEffect[] {
-    throw new Error('Method not implemented.')
+    this.data.duration += 1
+    return [new EffectAddExp(1)]
   }
 }
 
 /**
  * 功法资源索引表
  */
-export const GongFaResTable: Record<string, new () => BaseGongfa<any>> = {
+export const GongFaResTable: Record<string, new (data: any | null) => BaseGongfa<any>> = {
   chang_chun_gong: GongfaChangChunGong,
-} 
+}
 
 export class PlayerMainGongfaComp extends Component {
   gongfa: BaseGongfa<any> | null = null
 
   onAddedToEntity(): void {
     const core = this.entity.getComponent(PlayerCoreComp)!
-    if(core.mainGongfa){
-      const gf = GongFaResTable[core.mainGongfa[0]]
-      this.gongfa = new GongFaResTable[core.mainGongfa[0]]()
+    // 如果有主功法，则加载功法class
+    if (core.mainGongfa) {
+      this.gongfa = new GongFaResTable[core.mainGongfa[0]](core.mainGongfa[1])
     }
   }
 }
