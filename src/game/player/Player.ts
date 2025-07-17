@@ -10,6 +10,8 @@ export class PlayerCoreComp extends Component {
     public name: string,
     public lv: number,
     public exp: number,
+    /* 主功法数据 */
+    public mainGongfa: readonly [key: string, data: object] | null,
   ) {
     super()
   }
@@ -27,7 +29,7 @@ export class PlayerCoreComp extends Component {
  */
 export function createPlayerEntity(scene: Scene, name: string): Entity {
   const entity = scene.createEntity('player')
-  entity.addComponent(new PlayerCoreComp(name, 1, 0))
+  entity.addComponent(new PlayerCoreComp(name, 1, 0, null))
   entity.addComponent(new PlayerEffectComp())
   entity.addComponent(new PlayerBuffComp([['juqi', { count: 1 }]]))
   return entity

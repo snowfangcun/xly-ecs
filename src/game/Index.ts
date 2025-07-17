@@ -1,6 +1,6 @@
 import { Core, Scene } from '@esengine/ecs-framework'
 import { createPlayerEntity } from './player/Player'
-import { PlayerXiulianSys } from './player/XiulianSystem'
+import { GongfaSys } from './player/gongfa/GongfaSys'
 import { BuffSys } from './player/buff/BuffSys'
 import { EffectSys } from './player/effect/EffectSys'
 
@@ -10,7 +10,7 @@ export function startGame() {
   const scene = new Scene()
   Core.scene = scene
 
-  scene.addEntityProcessor(new PlayerXiulianSys()).updateOrder = 1
+  scene.addEntityProcessor(new GongfaSys()).updateOrder = 1
   scene.addEntityProcessor(new BuffSys()).updateOrder = 10
   scene.addEntityProcessor(new EffectSys()).updateOrder = 20
 
