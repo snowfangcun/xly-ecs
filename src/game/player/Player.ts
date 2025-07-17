@@ -1,6 +1,7 @@
 import { Component, Entity, Scene } from '@esengine/ecs-framework'
 import { PlayerEffectComp } from './effect/Effect'
 import { PlayerBuffComp } from './buff/Buff'
+import { PlayerEventType, type PlayerEventData } from '../PlayerType'
 
 /**
  * 角色核心组件
@@ -12,6 +13,7 @@ export class PlayerCoreComp extends Component {
     public exp: number,
     /* 主功法数据 */
     public mainGongfa: readonly [key: string, data: object] | null,
+    public currentEvent: PlayerEventData,
   ) {
     super()
   }
@@ -29,7 +31,9 @@ export class PlayerCoreComp extends Component {
  */
 export function createPlayerEntity(scene: Scene, name: string): Entity {
   const entity = scene.createEntity('player')
-  entity.addComponent(new PlayerCoreComp(name, 1, 0, null))
+  entity.addComponent(
+    new PlayerCoreComp(name, 1, 0, null, { type: PlayerEventType.Nothing, startTime: -1 }),
+  )
   entity.addComponent(new PlayerEffectComp())
   entity.addComponent(new PlayerBuffComp([['juqi', { count: 1 }]]))
   return entity

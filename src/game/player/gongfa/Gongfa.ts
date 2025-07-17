@@ -3,6 +3,10 @@ import { Component } from '@esengine/ecs-framework'
 import { EffectAddExp, type BaseEffect } from '../effect/Effect'
 import { PlayerCoreComp } from '../Player'
 
+/**
+ * 所有功法的基类
+ * 功法是effect的生产者，随着功法的执行，功法会根据功法数据源源不断的生成effect
+ */
 export abstract class BaseGongfa<T extends object> {
   data: T = null!
 

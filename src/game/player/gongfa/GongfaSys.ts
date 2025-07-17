@@ -1,16 +1,20 @@
 import { Entity, EntitySystem, Matcher } from '@esengine/ecs-framework'
-import { EffectAddExp, PlayerEffectComp } from '../effect/Effect'
+import { PlayerEffectComp } from '../effect/Effect'
 import { PlayerCoreComp } from '../Player'
+import { PlayerMainGongfaComp } from './Gongfa'
 
 export class GongfaSys extends EntitySystem {
   constructor() {
-    super(Matcher.empty().all(PlayerCoreComp, PlayerEffectComp))
+    super(Matcher.empty().all(PlayerCoreComp, PlayerEffectComp, PlayerMainGongfaComp))
   }
 
   public process(entities: Entity[]): void {
     entities.forEach((e) => {
       const effect = e.getComponent(PlayerEffectComp)!
-      effect.addEffect(new EffectAddExp(1))
+      const mainGongfa = e.getComponent(PlayerMainGongfaComp)!
+      if (!mainGongfa.gongfa) return
+      // 执行功法
+      mainGongfa.gongfa.execute().forEach(effect.addEffect)
     })
   }
 }
