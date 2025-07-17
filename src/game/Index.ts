@@ -1,6 +1,8 @@
 import { Core, Scene } from '@esengine/ecs-framework'
 import { createPlayerEntity } from './player/Player'
 import { PlayerXiulianSys } from './player/XiulianSystem'
+import { BuffSys } from './player/buff/BuffSys'
+import { EffectSys } from './player/effect/EffectSys'
 
 export const core = Core.create(true)
 
@@ -8,7 +10,9 @@ export function startGame() {
   const scene = new Scene()
   Core.scene = scene
 
-  scene.addEntityProcessor(new PlayerXiulianSys())
+  scene.addEntityProcessor(new PlayerXiulianSys()).updateOrder = 1
+  scene.addEntityProcessor(new BuffSys()).updateOrder = 10
+  scene.addEntityProcessor(new EffectSys()).updateOrder = 20
 
   createPlayerEntity(scene, '韩立')
 

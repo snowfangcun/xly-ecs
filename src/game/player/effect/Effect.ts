@@ -14,4 +14,12 @@ export class PlayerEffectComp extends Component {
   addEffect(effect: BaseEffect) {
     this.effects.push(effect)
   }
+
+  cllear() {
+    this.effects = []
+  }
+
+  isEmpty() {
+    return this.effects.length === 0
+  }
 }

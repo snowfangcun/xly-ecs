@@ -1,14 +1,16 @@
-import { useCounterStore } from '@/stores/counter'
-import { Entity, EntitySystem, Time } from '@esengine/ecs-framework'
+import { Entity, EntitySystem, Matcher } from '@esengine/ecs-framework'
+import { EffectAddExp, PlayerEffectComp } from './effect/Effect'
+import { PlayerCoreComp } from './Player'
 
 export class PlayerXiulianSys extends EntitySystem {
+  constructor() {
+    super(Matcher.empty().all(PlayerCoreComp, PlayerEffectComp))
+  }
+
   public process(entities: Entity[]): void {
-    console.log('process', entities.length)
     entities.forEach((e) => {
-      if (e.name !== 'player') return
-      const store = useCounterStore()
-      store.increment()
-      console.log('xiulian', Time.deltaTime)
+      const effect = e.getComponent(PlayerEffectComp)!
+      effect.addEffect(new EffectAddExp(1))
     })
   }
 }
