@@ -2,6 +2,7 @@
 import { Component } from '@esengine/ecs-framework'
 import { EffectAddExp, type BaseEffect } from '../effect/Effect'
 import { PlayerCoreComp } from '../Player'
+import { getGongfaRes } from '../stuffbox/StuffRes'
 
 /**
  * 所有功法的基类
@@ -41,13 +42,6 @@ export class GongfaChangChunGong extends BaseGongfa<ChangChunGongData> {
   }
 }
 
-/**
- * 功法资源索引表
- */
-export const GongFaResTable: Record<string, new (data: any | null) => BaseGongfa<any>> = {
-  chang_chun_gong: GongfaChangChunGong,
-}
-
 export class PlayerMainGongfaComp extends Component {
   gongfa: BaseGongfa<any> | null = null
 
@@ -55,7 +49,8 @@ export class PlayerMainGongfaComp extends Component {
     const core = this.entity.getComponent(PlayerCoreComp)!
     // 如果有主功法，则加载功法class
     if (core.mainGongfa) {
-      this.gongfa = new GongFaResTable[core.mainGongfa[0]](core.mainGongfa[1])
+      const clz = getGongfaRes(core.mainGongfa[0]).clz
+      this.gongfa = new clz(core.mainGongfa[1])
     }
   }
 }
