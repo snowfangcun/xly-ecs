@@ -13,7 +13,6 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@esengine/ecs-framework": "^2.1.26",
     "@types/lodash": "^4.17.20",
     "lodash": "^4.17.21",
     "pinia": "^3.0.3",
