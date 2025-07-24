@@ -3,6 +3,25 @@ import { Subject } from 'rxjs'
 import { Entity, type EntityId } from './entity'
 import type { System } from './system'
 import type { Event } from './Event'
+import type { ComponentType } from './Types'
+
+/**
+ * 查询条件
+ */
+export type QueryCriteria = {
+  /**
+   * 必须存在的组件
+   */
+  all?: ComponentType[]
+  /**
+   * 任意之一的组件
+   */
+  any?: ComponentType[]
+  /**
+   * 不存在的组件
+   */
+  none?: ComponentType[]
+}
 
 export class World {
   private _entities: Map<EntityId, Entity> = new Map()
@@ -89,9 +108,40 @@ export class World {
     await Promise.all(promises)
   }
 
+  /**
+   * 执行系统更新
+   * @param system
+   * @param deltaTime
+   */
   private async executeSystemUpdate(system: System, deltaTime: number): Promise<void> {
-    const queryEntities = Array.from(this._entities.values())
+    const queryEntities = this.query(system.requiredComponents)
+    system.preUpdate?.(deltaTime)
     system.update(queryEntities, deltaTime)
+    system.postUpdate?.(deltaTime)
+  }
+
+  query(criteria: QueryCriteria): Entity[] {
+    const entities = Array.from(this._entities.values())
+    return entities.filter((entity) => {
+      // 检查是否包含所有必须存在的组件
+      const hasAll =
+        !criteria.all ||
+        criteria.all.every((requiredComponent) => entity.componentTypes.includes(requiredComponent))
+      if (!hasAll) return false
+      // 检查是否包含任意之一的组件
+      const hasAny =
+        !criteria.any ||
+        criteria.any.length === 0 ||
+        criteria.any.some((anyComponent) => entity.componentTypes.includes(anyComponent))
+      if (!hasAny) return false
+      // 检查是否不包含指定的组件
+      const hasNone =
+        !criteria.none ||
+        criteria.none.every(
+          (excludedComponent) => !entity.componentTypes.includes(excludedComponent),
+        )
+      return hasNone
+    })
   }
 
   emitEvent(event: Event) {

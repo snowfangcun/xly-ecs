@@ -8,6 +8,10 @@ export class Entity {
 
   constructor(readonly id: string) {}
 
+  get componentTypes(): ComponentConstructor[] {
+    return Array.from(this._components.keys())
+  }
+
   /**
    * 向实体添加组件
    * @param comp

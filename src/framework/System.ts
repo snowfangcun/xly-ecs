@@ -1,6 +1,6 @@
 import { filter, map } from 'rxjs'
 import type { EventType } from './Types'
-import type { World } from './world'
+import type { QueryCriteria, World } from './world'
 import type { Entity } from './entity'
 
 /**
@@ -10,6 +10,13 @@ export abstract class System {
   private _enabled = true
   private _priority = 0
   protected world: World | undefined = undefined
+
+  /**
+   * 创建具有所需组件类型的新系统
+   * @param requiredComponents 系统依赖的组件类型
+   */
+  constructor(public readonly requiredComponents: QueryCriteria = {}) {}
+
   /**
    * Get system enabled state
    */
