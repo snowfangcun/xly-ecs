@@ -1,4 +1,7 @@
+import { filter, map } from 'rxjs'
+import type { EventType } from './Types'
 import type { World } from './world'
+import type { Entity } from './entity'
 
 /**
  * 所有系统的基类
@@ -49,4 +52,45 @@ export abstract class System {
   onRemovedFromWorld(): void {
     this.world = undefined
   }
+
+  /**
+   * 订阅事件
+   * @param eventType
+   * @param callback
+   */
+  eventSubscribe<T extends Event>(eventType: EventType<T>, callback: (event: T) => void): void {
+    this.world?.event$
+      .pipe(
+        filter((event) => event instanceof eventType),
+        map((event) => event as T),
+      )
+      .subscribe((event) => callback(event))
+  }
+
+  /**
+   * 派发事件
+   * @param event
+   */
+  eventDispatch(event: Event): void {
+    this.world?.emitEvent(event)
+  }
+
+  /**
+   * 更新前调用
+   * @param deltaTime
+   */
+  preUpdate?(deltaTime: number): void
+
+  /**
+   * 使用匹配的实体更新系统
+   * @param entities
+   * @param deltaTime
+   */
+  abstract update(entities: Entity[], deltaTime: number): void
+
+  /**
+   * 更新后调用
+   * @param deltaTime
+   */
+  postUpdate?(deltaTime: number): void
 }
