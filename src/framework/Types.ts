@@ -1,4 +1,4 @@
-import type { Component } from './component'
+import type { Component } from './Component'
 import type { Event } from './Event'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -6,7 +6,7 @@ import type { Event } from './Event'
 /**
  * 组件构造函数类型
  */
-export type ComponentConstructor<T extends Component = Component> = new (...args: any[]) => T
+export type ComponentConstructor<T extends Component = Component,> = new (...args: any[]) => T
 
 /**
  * 组件类型

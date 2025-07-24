@@ -1,5 +1,5 @@
-import type { Component } from './component'
-import type { ComponentConstructor } from './Types'
+import type { Component } from './Component'
+import type { ComponentConstructor, ComponentType } from './Types'
 
 export type EntityId = string
 
@@ -18,9 +18,9 @@ export class Entity {
    * @param args
    * @returns
    */
-  addComponent<T extends Component>(
-    comp: ComponentConstructor<T>,
-    ...args: ConstructorParameters<ComponentConstructor<T>>
+  addComponent<T extends Component, P extends ComponentType<T>>(
+    comp: P,
+    ...args: ConstructorParameters<P>
   ): T {
     const component = new comp(...args)
     this._components.set(comp, component)
@@ -33,10 +33,14 @@ export class Entity {
    * @param comp
    * @returns
    */
-  removeComponent<T extends Component>(comp: ComponentConstructor<T>): void {
+  removeComponent<T extends Component>(comp: ComponentType<T>): void {
     const component = this._components.get(comp)
     if (!component) return
     component.onRemoved?.()
     this._components.delete(comp)
+  }
+
+  getComponent<T extends Component>(compType: ComponentType<T>): T | undefined {
+    return this._components.get(compType) as T
   }
 }

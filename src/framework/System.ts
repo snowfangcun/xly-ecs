@@ -1,7 +1,7 @@
 import { filter, map } from 'rxjs'
 import type { EventType } from './Types'
-import type { QueryCriteria, World } from './world'
-import type { Entity } from './entity'
+import type { QueryCriteria, World } from './World'
+import type { Entity } from './Entity'
 
 /**
  * 所有系统的基类

@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { RouterView } from 'vue-router'
 import ClickText from './components/ClickText.vue'
 import ThemeProvider, { type Theme } from './components/ThemeProvider.vue'
-import { startGame } from './game/Index'
+import { startGame } from './game/Game'
 
 const theme = ref<Theme>({
   clickText: {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Subject } from 'rxjs'
-import { Entity, type EntityId } from './entity'
-import type { System } from './system'
+import { Entity, type EntityId } from './Entity'
+import type { System } from './System'
 import type { Event } from './Event'
 import type { ComponentType } from './Types'
 
