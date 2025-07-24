@@ -1,7 +1,4 @@
-import { Component } from '@/framework/Component'
-import type { Entity } from '@/framework/Entity'
-import { System } from '@/framework/System'
-import { World } from '@/framework/World'
+import { Component, Entity, System, World } from '@/framework'
 
 class PlayerComp extends Component {
   constructor(public name: string) {
