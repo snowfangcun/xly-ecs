@@ -1,4 +1,4 @@
-import { filter, map } from 'rxjs'
+import { filter, map, Subscription } from 'rxjs'
 import type { EventType } from './Types'
 import type { QueryCriteria, World } from './World'
 import type { Entity } from './Entity'
@@ -11,6 +11,7 @@ export abstract class System {
   private _enabled = true
   private _priority = 0
   protected world: World | undefined = undefined
+  private subscriptions: Subscription[] = []
 
   /**
    * 创建具有所需组件类型的新系统
@@ -58,6 +59,8 @@ export abstract class System {
    * 系统从世界移除时调用
    */
   onRemovedFromWorld(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe())
+    this.subscriptions = []
     this.world = undefined
   }
 
@@ -66,13 +69,27 @@ export abstract class System {
    * @param eventType
    * @param callback
    */
-  eventSubscribe<T extends Event>(eventType: EventType<T>, callback: (event: T) => void): void {
-    this.world?.event$
+  eventSubscribe<T extends Event>(
+    eventType: EventType<T>,
+    callback: (event: T) => void,
+  ): Subscription | undefined {
+    const subscription = this.world?.event$
       .pipe(
         filter((event) => event instanceof eventType),
         map((event) => event as T),
       )
-      .subscribe((event) => callback(event))
+      .subscribe((event) => {
+        try {
+          callback(event)
+        } catch (error) {
+          console.error(`Error in event handler for ${eventType.name}:`, error)
+        }
+      })
+    if (subscription) {
+      this.subscriptions.push(subscription)
+    }
+
+    return subscription
   }
 
   /**
