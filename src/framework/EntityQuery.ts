@@ -33,7 +33,7 @@ export class QueryCriteriaBuilder {
     this.updateKey()
   }
 
-  all(...components: ComponentType[]): this {
+  with(...components: ComponentType[]): this {
     this._all = components
     this.updateKey()
     return this
@@ -45,7 +45,7 @@ export class QueryCriteriaBuilder {
     return this
   }
 
-  none(...components: ComponentType[]): this {
+  without(...components: ComponentType[]): this {
     this._none = components
     this.updateKey()
     return this
