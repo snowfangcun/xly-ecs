@@ -1,12 +1,13 @@
 import type { Component } from './Component'
 import type { Event } from './Event'
+import type { System } from './System'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * 组件构造函数类型
  */
-export type ComponentConstructor<T extends Component = Component,> = new (...args: any[]) => T
+export type ComponentConstructor<T extends Component = Component> = new (...args: any[]) => T
 
 /**
  * 组件类型
@@ -18,12 +19,4 @@ export type ComponentType<T extends Component = Component> = ComponentConstructo
  */
 export type EventType<T extends Event> = new (...args: any[]) => T
 
-/**
- * 特定组件类型的存储
- */
-export interface ComponentStorage {
-  /** 组件构造函数 */
-  componentType: ComponentType
-  /** 组件的密集数组 */
-  components: Component[]
-}
+export type SystemType<T extends System = System> = new () => T

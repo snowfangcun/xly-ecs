@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs'
-import type { ComponentType } from './Types'
+import type { ComponentType, SystemType } from './Types'
 
 /**
  * 事件基类
@@ -84,6 +84,42 @@ export class ComponentRemovedEvent extends Event {
     public entityId: string,
     public componentType: ComponentType,
   ) {
+    super()
+  }
+}
+
+/**
+ * 实体创建事件
+ */
+export class EntityCreatedEvent extends Event {
+  constructor(public entityId: string) {
+    super()
+  }
+}
+
+/**
+ * 实体移除事件
+ */
+export class EntityRemovedEvent extends Event {
+  constructor(public entityId: string) {
+    super()
+  }
+}
+
+/**
+ * 系统添加事件
+ */
+export class SystemAddedEvent extends Event {
+  constructor(public systemType: SystemType) {
+    super()
+  }
+}
+
+/**
+ * 系统移除事件
+ */
+export class SystemRemovedEvent extends Event {
+  constructor(public systemType: SystemType) {
     super()
   }
 }

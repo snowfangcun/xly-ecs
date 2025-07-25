@@ -1,11 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Entity } from './Entity'
 import { EntityQuery, QueryCriteriaBuilder, type QueryCriteria } from './EntityQuery'
-import { EventDispatcher, EventDispatchMode, type Event } from './Event'
+import {
+  EntityCreatedEvent,
+  EntityRemovedEvent,
+  EventDispatcher,
+  EventDispatchMode,
+  SystemAddedEvent,
+  SystemRemovedEvent,
+  type Event,
+} from './Event'
 import type { System } from './System'
+import type { SystemType } from './Types'
 
 export class World {
-  private readonly _systems: System[] = []
+  private readonly _systems: {
+    system: System
+    systemType: SystemType
+  }[] = []
   /* 暂停 */
   private _paused = false
   private eventDispatcher = new EventDispatcher()
@@ -19,6 +31,8 @@ export class World {
   createEntity(): Entity {
     const entity = new Entity(crypto.randomUUID(), this.eventDispatcher)
     this.entityQuery.addEntity(entity)
+    /* 派发实体创建事件，此事件会延迟到帧末尾派发 */
+    this.eventDispatcher.emitEvent(new EntityCreatedEvent(entity.id), EventDispatchMode.EndOfFrame)
     return entity
   }
 
@@ -28,31 +42,49 @@ export class World {
    */
   removeEntity(entityInstance: Entity): void {
     this.entityQuery.removeEntity(entityInstance)
+    /* 派发实体移除事件，此事件会延迟到帧末尾派发 */
+    this.eventDispatcher.emitEvent(
+      new EntityRemovedEvent(entityInstance.id),
+      EventDispatchMode.EndOfFrame,
+    )
   }
 
   /**
    * 向世界中添加系统
    */
-  addSystem(system: System): this {
-    this._systems.push(system)
+  addSystem<T extends System>(systemType: SystemType<T>, priority: number = 1): this {
+    const systemInstance = new systemType()
+    systemInstance.priority = priority
+    this._systems.push({
+      system: systemInstance,
+      systemType,
+    })
     /* 按照系统的优先级进行排序 */
-    this._systems.sort((a, b) => b.priority - a.priority)
+    this._systems.sort((a, b) => b.system.priority - a.system.priority)
     /* 调用系统的onAddedToWorld生命周期方法 */
-    system.onAddedToWorld(this)
+    systemInstance.onAddedToWorld(this)
+    /* 派发系统添加事件，此事件会延迟到帧末尾派发 */
+    this.eventDispatcher.emitEvent(new SystemAddedEvent(systemType), EventDispatchMode.EndOfFrame)
     return this
   }
 
   /**
    * 从世界中移除系统
-   * @param system
+   * @param systemType
    * @returns
    */
-  removeSystem(system: System): this {
-    const index = this._systems.indexOf(system)
+  removeSystem(systemType: SystemType): this {
+    const index = this._systems.findIndex((s) => s.systemType === systemType)
     if (index !== -1) {
+      const s = this._systems[index]
       this._systems.splice(index, 1)
       /* 调用系统的onRemovedFromWorld生命周期方法 */
-      system.onRemovedFromWorld()
+      s.system.onRemovedFromWorld()
+      /* 派发系统移除事件，此事件会延迟到帧末尾派发 */
+      this.eventDispatcher.emitEvent(
+        new SystemRemovedEvent(s.systemType),
+        EventDispatchMode.EndOfFrame,
+      )
     }
     return this
   }
@@ -74,9 +106,9 @@ export class World {
     /* 如果世界为暂停状态则不更新 */
     if (this._paused) return
     /* 筛选出启用的系统 */
-    const enabledSystems = this._systems.filter((system) => system.enabled)
+    const enabledSystems = this._systems.filter((s) => s.system.enabled)
     const promises = enabledSystems.map((s) => {
-      this.executeSystemFrameUpdate(s, deltaTime)
+      this.executeSystemFrameUpdate(s.system, deltaTime)
     })
     await Promise.all(promises)
 

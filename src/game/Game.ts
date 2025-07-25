@@ -35,8 +35,6 @@ class TestSys extends System {
   }
 }
 
-
-
 export function startGame() {
   const world = new World()
 
@@ -46,7 +44,7 @@ export function startGame() {
   const enemyEntity = world.createEntity()
   enemyEntity.addComponent(EnemyComp, '小怪兽')
 
-  world.addSystem(new TestSys())
+  world.addSystem(TestSys)
 
   setInterval(() => {
     world.update(1)
