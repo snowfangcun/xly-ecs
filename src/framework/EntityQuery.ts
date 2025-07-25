@@ -102,9 +102,12 @@ export class QueryCriteriaBuilder {
 }
 
 export class EntityQuery {
+  /* 实体集合 */
+  private entities: Map<EntityId, Entity> = new Map()
   // 组件类型索引，存储实体ID集合
   private componentEntityIndex: Map<ComponentType, Set<EntityId>> = new Map()
-  private entities: Map<EntityId, Entity> = new Map()
+  // 标签索引，存储标签对应的实体ID集合
+  private tagEntityIndex: Map<string, Set<EntityId>> = new Map()
   /* 条件查询缓存 */
   private queryCache: Map<string, EntityId[]> = new Map()
   /* 标签查询缓存 */
@@ -117,7 +120,6 @@ export class EntityQuery {
         const entity = this.entities.get(event.entityId)
         if (entity) {
           this.indexEntityComponent(entity, event.componentType)
-          // 清除缓存
           this.clearQueryCache()
         }
       } else if (event instanceof ComponentRemovedEvent) {
@@ -127,15 +129,29 @@ export class EntityQuery {
           this.clearQueryCache()
         }
       } else if (event instanceof EntityAddTagEvent) {
-        this.clearTagCache()
+        const entity = this.entities.get(event.entityId)
+        if (entity) {
+          this.indexEntityTag(entity, event.tag)
+          this.clearTagCache()
+        }
       } else if (event instanceof EntityRemoveTagEvent) {
-        this.clearTagCache()
+        const entity = this.entities.get(event.entityId)
+        if (entity) {
+          this.deindexEntityTag(entity, event.tag)
+          this.clearTagCache()
+        }
       }
     })
   }
 
   addEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
+    // 建立标签索引
+    if (entity.tags) {
+      for (const tag of entity.tags) {
+        this.indexEntityTag(entity, tag)
+      }
+    }
     this.clearQueryCache()
     this.clearTagCache()
   }
@@ -143,6 +159,7 @@ export class EntityQuery {
   removeEntity(entity: Entity) {
     this.entities.delete(entity.id)
     this.removeEntityFromIndex(entity)
+    this.removeEntityFromTagIndex(entity)
     this.clearQueryCache()
     this.clearTagCache()
   }
@@ -182,6 +199,47 @@ export class EntityQuery {
   removeEntityFromIndex(entity: Entity): void {
     for (const compType of entity.componentTypes) {
       this.deindexEntityComponent(entity, compType)
+    }
+  }
+
+  /**
+   * 建立实体标签索引
+   * @param entity
+   * @param tag
+   */
+  private indexEntityTag(entity: Entity, tag: string): void {
+    let set = this.tagEntityIndex.get(tag)
+    if (!set) {
+      set = new Set()
+      this.tagEntityIndex.set(tag, set)
+    }
+    set.add(entity.id)
+  }
+
+  /**
+   * 删除实体标签索引
+   * @param entity
+   * @param tag
+   */
+  private deindexEntityTag(entity: Entity, tag: string): void {
+    const set = this.tagEntityIndex.get(tag)
+    if (set) {
+      set.delete(entity.id)
+      if (set.size === 0) {
+        this.tagEntityIndex.delete(tag)
+      }
+    }
+  }
+
+  /**
+   * 从所有标签索引中移除实体
+   * @param entity
+   * @returns
+   */
+  private removeEntityFromTagIndex(entity: Entity): void {
+    if (!entity.tags) return
+    for (const tag of entity.tags) {
+      this.deindexEntityTag(entity, tag)
     }
   }
 
@@ -295,7 +353,6 @@ export class EntityQuery {
    * @returns
    */
   queryByTag(...tags: string[]): Entity[] {
-    // 生成缓存key，标签排序后用逗号连接，保证唯一且稳定
     const cacheKey = tags.slice().sort().join(',')
 
     if (this.tagQueryCache.has(cacheKey)) {
@@ -303,15 +360,27 @@ export class EntityQuery {
       return cachedIds.map((id) => this.entities.get(id)!).filter(Boolean)
     }
 
-    const resultEntities = Array.from(this.entities.values()).filter((entity) => {
-      if (!entity.tags) return false
-      // 判断实体是否包含所有标签
-      return tags.every((tag) => entity.tags.has(tag))
-    })
+    if (tags.length === 0) {
+      return Array.from(this.entities.values())
+    }
 
-    const resultIds = resultEntities.map((e) => e.id)
+    let candidates: Set<EntityId> | null = null
+    for (const tag of tags) {
+      const set = this.tagEntityIndex.get(tag)
+      if (!set) {
+        return []
+      }
+      if (candidates === null) {
+        candidates = new Set(set)
+      } else {
+        candidates = new Set(Array.from(candidates as Set<string>).filter((id) => set.has(id)))
+        if (candidates.size === 0) return []
+      }
+    }
+
+    const resultIds = Array.from(candidates!)
     this.tagQueryCache.set(cacheKey, resultIds)
 
-    return resultEntities
+    return resultIds.map((id) => this.entities.get(id)!).filter(Boolean)
   }
 }
