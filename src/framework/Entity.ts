@@ -83,6 +83,7 @@ export class Entity implements IComponent4Entity {
     const component = new comp(...args)
     this._components.set(comp, component)
     component.owner = this
+    component.eventDispatcher = this.eventDispatcher
     component.onAdded?.()
     // 派发组件添加事件
     this.eventDispatcher?.emitEvent(new ComponentAddedEvent(this.id, comp))
@@ -100,6 +101,7 @@ export class Entity implements IComponent4Entity {
     component.onRemoved?.()
     this._components.delete(comp)
     component.owner = undefined
+    component.eventDispatcher = undefined
     // 派发组件移除事件
     this.eventDispatcher?.emitEvent(new ComponentRemovedEvent(this.id, comp))
   }
