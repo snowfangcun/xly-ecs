@@ -26,8 +26,8 @@ export class Entity {
     return Array.from(this._components.keys())
   }
 
-  get tags(): string[] {
-    return [...this._tags]
+  get tags(): Set<string> {
+    return new Set(this._tags)
   }
 
   /**

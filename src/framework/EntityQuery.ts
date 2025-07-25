@@ -99,8 +99,10 @@ export class EntityQuery {
   // 组件类型索引，存储实体ID集合
   private componentEntityIndex: Map<ComponentType, Set<EntityId>> = new Map()
   private entities: Map<EntityId, Entity> = new Map()
-  /* 查询缓存 */
+  /* 条件查询缓存 */
   private queryCache: Map<string, EntityId[]> = new Map()
+  /* 标签查询缓存 */
+  private tagQueryCache: Map<string, EntityId[]> = new Map()
 
   constructor(private readonly eventDispatcher: EventDispatcher) {
     // 订阅组件添加事件
@@ -110,13 +112,13 @@ export class EntityQuery {
         if (entity) {
           this.indexEntityComponent(entity, event.componentType)
           // 清除缓存
-          this.clearCache()
+          this.clearQueryCache()
         }
       } else if (event instanceof ComponentRemovedEvent) {
         const entity = this.entities.get(event.entityId)
         if (entity) {
           this.deindexEntityComponent(entity, event.componentType)
-          this.clearCache()
+          this.clearQueryCache()
         }
       }
     })
@@ -124,13 +126,15 @@ export class EntityQuery {
 
   addEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
-    this.clearCache()
+    this.clearQueryCache()
+    this.clearTagCache()
   }
 
   removeEntity(entity: Entity) {
     this.entities.delete(entity.id)
     this.removeEntityFromIndex(entity)
-    this.clearCache()
+    this.clearQueryCache()
+    this.clearTagCache()
   }
 
   /**
@@ -171,8 +175,18 @@ export class EntityQuery {
     }
   }
 
-  private clearCache(): void {
+  /**
+   * 清除条件查询缓存
+   */
+  private clearQueryCache(): void {
     this.queryCache.clear()
+  }
+
+  /**
+   * 清空标签索引缓存
+   */
+  private clearTagCache(): void {
+    this.tagQueryCache.clear()
   }
 
   query(criteria: QueryCriteriaBuilder | QueryCriteria): Entity[] {
@@ -263,5 +277,31 @@ export class EntityQuery {
     this.queryCache.set(cacheKey, resultIds)
 
     return resultIds.map((id) => this.entities.get(id)!).filter(Boolean)
+  }
+
+  /**
+   * 根据标签查询实体
+   * @param tag
+   * @returns
+   */
+  queryByTag(...tags: string[]): Entity[] {
+    // 生成缓存key，标签排序后用逗号连接，保证唯一且稳定
+    const cacheKey = tags.slice().sort().join(',')
+
+    if (this.tagQueryCache.has(cacheKey)) {
+      const cachedIds = this.tagQueryCache.get(cacheKey)!
+      return cachedIds.map((id) => this.entities.get(id)!).filter(Boolean)
+    }
+
+    const resultEntities = Array.from(this.entities.values()).filter((entity) => {
+      if (!entity.tags) return false
+      // 判断实体是否包含所有标签
+      return tags.every((tag) => entity.tags.has(tag))
+    })
+
+    const resultIds = resultEntities.map((e) => e.id)
+    this.tagQueryCache.set(cacheKey, resultIds)
+
+    return resultEntities
   }
 }
