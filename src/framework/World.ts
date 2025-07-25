@@ -90,7 +90,7 @@ export class World {
    * @param deltaTime
    */
   private async executeSystemFrameUpdate(system: System, deltaTime: number): Promise<void> {
-    const queryEntities = this.query(system.requiredComponents)
+    const queryEntities = this.query(system.queryCriteriaBuilder)
     system.preUpdate?.(deltaTime)
     system.update(queryEntities, deltaTime)
     system.postUpdate?.(deltaTime)

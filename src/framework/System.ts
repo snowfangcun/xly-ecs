@@ -3,7 +3,7 @@ import type { EventType } from './Types'
 import type { World } from './World'
 import type { Entity } from './Entity'
 import { EventDispatchMode } from './Event'
-import type { QueryCriteria } from './EntityQuery'
+import { QueryCriteriaBuilder, type QueryCriteria } from './EntityQuery'
 
 /**
  * 所有系统的基类
@@ -13,12 +13,15 @@ export abstract class System {
   private _priority = 0
   protected world: World | undefined = undefined
   private subscriptions: Subscription[] = []
+  public readonly queryCriteriaBuilder = new QueryCriteriaBuilder()
 
   /**
    * 创建具有所需组件类型的新系统
    * @param requiredComponents 系统依赖的组件类型
    */
-  constructor(public readonly requiredComponents: QueryCriteria = {}) {}
+  constructor(public readonly requiredComponents: QueryCriteria = {}) {
+    this.queryCriteriaBuilder.fromQueryCriteria(requiredComponents)
+  }
 
   /**
    * Get system enabled state

@@ -51,6 +51,14 @@ export class QueryCriteriaBuilder {
     return this
   }
 
+  fromQueryCriteria(criteria: QueryCriteria): this {
+    this._all = criteria.all || []
+    this._any = criteria.any || []
+    this._none = criteria.none || []
+    this.updateKey()
+    return this
+  }
+
   get allComponents(): ComponentType[] {
     return this._all
   }
