@@ -2,6 +2,7 @@ import { filter, map } from 'rxjs'
 import type { EventType } from './Types'
 import type { QueryCriteria, World } from './World'
 import type { Entity } from './Entity'
+import { EventDispatchMode } from './Event'
 
 /**
  * 所有系统的基类
@@ -76,10 +77,11 @@ export abstract class System {
 
   /**
    * 派发事件
-   * @param event
+   * @param event 要派发的事件
+   * @param mode 事件处理模式，默认为即时处理
    */
-  eventDispatch(event: Event): void {
-    this.world?.emitEvent(event)
+  eventDispatch(event: Event, mode: EventDispatchMode = EventDispatchMode.Immediate): void {
+    this.world?.emitEvent(event, mode)
   }
 
   /**

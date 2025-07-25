@@ -2,7 +2,7 @@
 import { Subject } from 'rxjs'
 import { Entity, type EntityId } from './Entity'
 import type { System } from './System'
-import type { Event } from './Event'
+import { EventDispatcher, EventDispatchMode, type Event } from './Event'
 import type { ComponentType } from './Types'
 
 /**
@@ -29,7 +29,8 @@ export class World {
   /* 暂停 */
   private _paused = false
   private eventSubject = new Subject<Event>()
-  public readonly event$ = this.eventSubject.asObservable()
+  private eventDispatcher = new EventDispatcher()
+  public readonly event$ = this.eventDispatcher.event$
 
   /**
    * 创建实体
@@ -103,17 +104,20 @@ export class World {
     /* 筛选出启用的系统 */
     const enabledSystems = this._systems.filter((system) => system.enabled)
     const promises = enabledSystems.map((s) => {
-      this.executeSystemUpdate(s, deltaTime)
+      this.executeSystemFrameUpdate(s, deltaTime)
     })
     await Promise.all(promises)
+
+    // 处理帧结束事件
+    this.eventDispatcher.processFrameEndEvents()
   }
 
   /**
-   * 执行系统更新
+   * 执行系统帧更新
    * @param system
    * @param deltaTime
    */
-  private async executeSystemUpdate(system: System, deltaTime: number): Promise<void> {
+  private async executeSystemFrameUpdate(system: System, deltaTime: number): Promise<void> {
     const queryEntities = this.query(system.requiredComponents)
     system.preUpdate?.(deltaTime)
     system.update(queryEntities, deltaTime)
@@ -144,7 +148,12 @@ export class World {
     })
   }
 
-  emitEvent(event: Event) {
-    this.eventSubject.next(event)
+  /**
+   * 派发事件
+   * @param event 要派发的事件
+   * @param mode 事件处理模式，默认为即时处理
+   */
+  emitEvent(event: Event, mode: EventDispatchMode = EventDispatchMode.Immediate): void {
+    this.eventDispatcher.emitEvent(event, mode)
   }
 }
