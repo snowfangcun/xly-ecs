@@ -1,44 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Subject } from 'rxjs'
-import { Entity, type EntityId } from './Entity'
-import type { System } from './System'
+import { Entity } from './Entity'
+import { EntityQuery, type QueryCriteria } from './EntityQuery'
 import { EventDispatcher, EventDispatchMode, type Event } from './Event'
-import type { ComponentType } from './Types'
-
-/**
- * 查询条件
- */
-export type QueryCriteria = {
-  /**
-   * 必须存在的组件
-   */
-  all?: ComponentType[]
-  /**
-   * 任意之一的组件
-   */
-  any?: ComponentType[]
-  /**
-   * 不存在的组件
-   */
-  none?: ComponentType[]
-}
+import type { System } from './System'
 
 export class World {
-  private _entities: Map<EntityId, Entity> = new Map()
   private readonly _systems: System[] = []
   /* 暂停 */
   private _paused = false
-  private eventSubject = new Subject<Event>()
   private eventDispatcher = new EventDispatcher()
   public readonly event$ = this.eventDispatcher.event$
+  private entityQuery: EntityQuery = new EntityQuery(this.eventDispatcher)
 
   /**
    * 创建实体
    * @returns
    */
   createEntity(): Entity {
-    const entity = new Entity(crypto.randomUUID())
-    this._entities.set(entity.id, entity)
+    const entity = new Entity(crypto.randomUUID(), this.eventDispatcher)
+    this.entityQuery.addEntity(entity)
     return entity
   }
 
@@ -47,16 +27,9 @@ export class World {
    * @param entityInstance
    */
   removeEntity(entityInstance: Entity): void {
-    this._entities.delete(entityInstance.id)
+    this.entityQuery.removeEntity(entityInstance)
   }
 
-  /**
-   * 根据实体ID移除实体
-   * @param entityId
-   */
-  removeEntityById(entityId: EntityId): void {
-    this._entities.delete(entityId)
-  }
 
   /**
    * 向世界中添加系统
@@ -125,27 +98,7 @@ export class World {
   }
 
   query(criteria: QueryCriteria): Entity[] {
-    const entities = Array.from(this._entities.values())
-    return entities.filter((entity) => {
-      // 检查是否包含所有必须存在的组件
-      const hasAll =
-        !criteria.all ||
-        criteria.all.every((requiredComponent) => entity.componentTypes.includes(requiredComponent))
-      if (!hasAll) return false
-      // 检查是否包含任意之一的组件
-      const hasAny =
-        !criteria.any ||
-        criteria.any.length === 0 ||
-        criteria.any.some((anyComponent) => entity.componentTypes.includes(anyComponent))
-      if (!hasAny) return false
-      // 检查是否不包含指定的组件
-      const hasNone =
-        !criteria.none ||
-        criteria.none.every(
-          (excludedComponent) => !entity.componentTypes.includes(excludedComponent),
-        )
-      return hasNone
-    })
+    return this.entityQuery.query(criteria)
   }
 
   /**

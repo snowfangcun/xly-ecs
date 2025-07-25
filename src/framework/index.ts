@@ -1,6 +1,7 @@
 import { Component } from './Component'
 import { Entity } from './Entity'
+import { Event, EventDispatchMode } from './Event'
 import { System } from './System'
 import { World } from './World'
 
-export { World, Entity, Component, System }
+export { World, Entity, Component, System, Event, EventDispatchMode }

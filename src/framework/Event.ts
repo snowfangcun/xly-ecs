@@ -1,4 +1,5 @@
 import { Observable, Subject } from 'rxjs'
+import type { ComponentType } from './Types'
 
 /**
  * 事件基类
@@ -60,5 +61,29 @@ export class EventDispatcher {
    */
   clearPendingEvents(): void {
     this.frameEndEvents = []
+  }
+}
+
+/**
+ * 组件添加事件
+ */
+export class ComponentAddedEvent extends Event {
+  constructor(
+    public entityId: string,
+    public componentType: ComponentType,
+  ) {
+    super()
+  }
+}
+
+/**
+ * 组件移除事件
+ */
+export class ComponentRemovedEvent extends Event {
+  constructor(
+    public entityId: string,
+    public componentType: ComponentType,
+  ) {
+    super()
   }
 }

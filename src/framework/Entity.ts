@@ -1,4 +1,5 @@
 import type { Component } from './Component'
+import { ComponentAddedEvent, ComponentRemovedEvent, type EventDispatcher } from './Event'
 import type { ComponentConstructor, ComponentType } from './Types'
 
 export type EntityId = string
@@ -6,7 +7,10 @@ export type EntityId = string
 export class Entity {
   private readonly _components = new Map<ComponentConstructor, Component>()
 
-  constructor(readonly id: string) {}
+  constructor(
+    readonly id: string,
+    private readonly eventDispatcher: EventDispatcher,
+  ) {}
 
   get componentTypes(): ComponentConstructor[] {
     return Array.from(this._components.keys())
@@ -25,6 +29,8 @@ export class Entity {
     const component = new comp(...args)
     this._components.set(comp, component)
     component.onAdded?.()
+    // 派发组件添加事件
+    this.eventDispatcher?.emitEvent(new ComponentAddedEvent(this.id, comp))
     return component
   }
 
@@ -38,6 +44,8 @@ export class Entity {
     if (!component) return
     component.onRemoved?.()
     this._components.delete(comp)
+    // 派发组件移除事件
+    this.eventDispatcher?.emitEvent(new ComponentRemovedEvent(this.id, comp))
   }
 
   getComponent<T extends Component>(compType: ComponentType<T>): T | undefined {

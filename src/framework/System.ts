@@ -1,8 +1,9 @@
 import { filter, map, Subscription } from 'rxjs'
 import type { EventType } from './Types'
-import type { QueryCriteria, World } from './World'
+import type { World } from './World'
 import type { Entity } from './Entity'
 import { EventDispatchMode } from './Event'
+import type { QueryCriteria } from './EntityQuery'
 
 /**
  * 所有系统的基类
