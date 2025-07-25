@@ -1,5 +1,11 @@
 import type { Entity, EntityId } from './Entity'
-import { ComponentAddedEvent, ComponentRemovedEvent, type EventDispatcher } from './Event'
+import {
+  ComponentAddedEvent,
+  ComponentRemovedEvent,
+  EntityAddTagEvent,
+  EntityRemoveTagEvent,
+  type EventDispatcher,
+} from './Event'
 import type { ComponentType } from './Types'
 
 /**
@@ -120,6 +126,10 @@ export class EntityQuery {
           this.deindexEntityComponent(entity, event.componentType)
           this.clearQueryCache()
         }
+      } else if (event instanceof EntityAddTagEvent) {
+        this.clearTagCache()
+      } else if (event instanceof EntityRemoveTagEvent) {
+        this.clearTagCache()
       }
     })
   }

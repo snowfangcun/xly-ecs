@@ -1,5 +1,10 @@
 import type { Component } from './Component'
-import { ComponentAddedEvent, ComponentRemovedEvent, type EventDispatcher } from './Event'
+import {
+  ComponentAddedEvent,
+  ComponentRemovedEvent,
+  EntityAddTagEvent,
+  type EventDispatcher,
+} from './Event'
 import type { ComponentConstructor, ComponentType } from './Types'
 
 /**
@@ -36,6 +41,7 @@ export class Entity {
    */
   addTag(tag: string): void {
     this._tags.add(tag)
+    this.eventDispatcher.emitEvent(new EntityAddTagEvent(this.id, tag))
   }
 
   /**
@@ -44,6 +50,7 @@ export class Entity {
    */
   removeTag(tag: string): void {
     this._tags.delete(tag)
+    this.eventDispatcher.emitEvent(new EntityAddTagEvent(this.id, tag))
   }
 
   /**

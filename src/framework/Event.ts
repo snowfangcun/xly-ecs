@@ -123,3 +123,27 @@ export class SystemRemovedEvent extends Event {
     super()
   }
 }
+
+/**
+ * 实体添加标签事件
+ */
+export class EntityAddTagEvent extends Event {
+  constructor(
+    public entityId: string,
+    public tag: string,
+  ) {
+    super()
+  }
+}
+
+/**
+ * 实体移除标签事件
+ */
+export class EntityRemoveTagEvent extends Event {
+  constructor(
+    public entityId: string,
+    public tag: string,
+  ) {
+    super()
+  }
+}
