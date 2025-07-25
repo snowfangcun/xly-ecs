@@ -13,6 +13,17 @@ export abstract class BaseResourcesLoader<T> {
   }
 
   /**
+   * 批量注册资源
+   * @param resources
+   */
+  registerBatch(resources: Record<string, T>): this {
+    for (const key in resources) {
+      this.register(key, resources[key])
+    }
+    return this
+  }
+
+  /**
    * 获取资源
    * @param key 资源键
    * @returns 资源
