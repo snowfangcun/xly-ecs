@@ -28,8 +28,8 @@ export class World {
    * 创建实体
    * @returns
    */
-  createEntity(): Entity {
-    const entity = new Entity(crypto.randomUUID(), this.eventDispatcher)
+  createEntity(tags: string[] = []): Entity {
+    const entity = new Entity(crypto.randomUUID(), this.eventDispatcher, tags)
     this.entityQuery.addEntity(entity)
     /* 派发实体创建事件，此事件会延迟到帧末尾派发 */
     this.eventDispatcher.emitEvent(new EntityCreatedEvent(entity.id), EventDispatchMode.EndOfFrame)

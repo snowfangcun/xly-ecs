@@ -35,6 +35,12 @@ class TestSys extends System {
   }
 }
 
+class Test2Sys extends System {
+  update(entities: Entity[], deltaTime: number): void {
+    console.log(`Test2 update ${deltaTime}`)
+  }
+}
+
 export function startGame() {
   const world = new World()
 
@@ -44,7 +50,8 @@ export function startGame() {
   const enemyEntity = world.createEntity()
   enemyEntity.addComponent(EnemyComp, '小怪兽')
 
-  world.addSystem(TestSys)
+  world.addSystem(TestSys, 2)
+  world.addSystem(Test2Sys, 11)
 
   setInterval(() => {
     world.update(1)

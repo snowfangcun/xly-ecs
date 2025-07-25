@@ -2,18 +2,57 @@ import type { Component } from './Component'
 import { ComponentAddedEvent, ComponentRemovedEvent, type EventDispatcher } from './Event'
 import type { ComponentConstructor, ComponentType } from './Types'
 
+/**
+ * 实体ID类型
+ */
 export type EntityId = string
 
+/**
+ * 实体类，代表游戏世界中的一个实体
+ */
 export class Entity {
   private readonly _components = new Map<ComponentConstructor, Component>()
+  private _tags: Set<string>
 
   constructor(
     readonly id: string,
     private readonly eventDispatcher: EventDispatcher,
-  ) {}
+    tags: string[] = [],
+  ) {
+    this._tags = new Set(tags)
+  }
 
   get componentTypes(): ComponentConstructor[] {
     return Array.from(this._components.keys())
+  }
+
+  get tags(): string[] {
+    return [...this._tags]
+  }
+
+  /**
+   * 添加标签
+   * @param tag
+   */
+  addTag(tag: string): void {
+    this._tags.add(tag)
+  }
+
+  /**
+   * 移除标签
+   * @param tag
+   */
+  removeTag(tag: string): void {
+    this._tags.delete(tag)
+  }
+
+  /**
+   * 检查实体是否有指定标签
+   * @param tag
+   * @returns
+   */
+  hasTag(tag: string): boolean {
+    return this._tags.has(tag)
   }
 
   /**
