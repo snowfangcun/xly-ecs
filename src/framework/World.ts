@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Entity } from './Entity'
-import { EntityQuery, type QueryCriteria } from './EntityQuery'
+import { EntityQuery, QueryCriteriaBuilder, type QueryCriteria } from './EntityQuery'
 import { EventDispatcher, EventDispatchMode, type Event } from './Event'
 import type { System } from './System'
 
@@ -29,7 +29,6 @@ export class World {
   removeEntity(entityInstance: Entity): void {
     this.entityQuery.removeEntity(entityInstance)
   }
-
 
   /**
    * 向世界中添加系统
@@ -97,7 +96,7 @@ export class World {
     system.postUpdate?.(deltaTime)
   }
 
-  query(criteria: QueryCriteria): Entity[] {
+  query(criteria: QueryCriteriaBuilder | QueryCriteria): Entity[] {
     return this.entityQuery.query(criteria)
   }
 

@@ -20,6 +20,73 @@ export type QueryCriteria = {
   none?: ComponentType[]
 }
 
+/**
+ * 查询条件构建器
+ */
+export class QueryCriteriaBuilder {
+  private _all: ComponentType[] = []
+  private _any: ComponentType[] = []
+  private _none: ComponentType[] = []
+  private _key: string = ''
+
+  constructor() {
+    this.updateKey()
+  }
+
+  all(...components: ComponentType[]): this {
+    this._all = components
+    this.updateKey()
+    return this
+  }
+
+  any(...components: ComponentType[]): this {
+    this._any = components
+    this.updateKey()
+    return this
+  }
+
+  none(...components: ComponentType[]): this {
+    this._none = components
+    this.updateKey()
+    return this
+  }
+
+  get allComponents(): ComponentType[] {
+    return this._all
+  }
+
+  get anyComponents(): ComponentType[] {
+    return this._any
+  }
+
+  get noneComponents(): ComponentType[] {
+    return this._none
+  }
+
+  get key(): string {
+    return this._key
+  }
+
+  private updateKey(): void {
+    // 生成唯一且稳定的key，格式：all:CompA,CompB|any:CompC|none:CompD
+    const serialize = (arr: ComponentType[]) =>
+      arr
+        .map((c) => c.name)
+        .sort()
+        .join(',')
+
+    this._key = `all:${serialize(this._all)}|any:${serialize(this._any)}|none:${serialize(this._none)}`
+  }
+
+  toCriteria(): QueryCriteria {
+    return {
+      all: this._all.length > 0 ? this._all : undefined,
+      any: this._any.length > 0 ? this._any : undefined,
+      none: this._none.length > 0 ? this._none : undefined,
+    }
+  }
+}
+
 export class EntityQuery {
   // 组件类型索引，存储实体ID集合
   private componentEntityIndex: Map<ComponentType, Set<EntityId>> = new Map()
@@ -100,17 +167,27 @@ export class EntityQuery {
     this.queryCache.clear()
   }
 
-  query(criteria: QueryCriteria): Entity[] {
-    const cacheKey = JSON.stringify(criteria)
+  query(criteria: QueryCriteriaBuilder | QueryCriteria): Entity[] {
+    let cacheKey: string
+    let queryCriteria: QueryCriteria
+
+    if (criteria instanceof QueryCriteriaBuilder) {
+      cacheKey = criteria.key
+      queryCriteria = criteria.toCriteria()
+    } else {
+      cacheKey = JSON.stringify(criteria)
+      queryCriteria = criteria
+    }
+
     if (this.queryCache.has(cacheKey)) {
       const cachedIds = this.queryCache.get(cacheKey)!
       return cachedIds.map((id) => this.entities.get(id)!).filter(Boolean)
     }
 
     if (
-      (!criteria.all || criteria.all.length === 0) &&
-      (!criteria.any || criteria.any.length === 0) &&
-      (!criteria.none || criteria.none.length === 0)
+      (!queryCriteria.all || queryCriteria.all.length === 0) &&
+      (!queryCriteria.any || queryCriteria.any.length === 0) &&
+      (!queryCriteria.none || queryCriteria.none.length === 0)
     ) {
       return Array.from(this.entities.values())
     }
@@ -118,8 +195,8 @@ export class EntityQuery {
     let candidates: Set<string> | null = null
 
     // All
-    if (criteria.all && criteria.all.length > 0) {
-      for (const compType of criteria.all) {
+    if (queryCriteria.all && queryCriteria.all.length > 0) {
+      for (const compType of queryCriteria.all) {
         const set = this.componentEntityIndex.get(compType)
         if (!set) {
           return []
@@ -137,9 +214,9 @@ export class EntityQuery {
     }
 
     // any
-    if (criteria.any && criteria.any.length > 0) {
+    if (queryCriteria.any && queryCriteria.any.length > 0) {
       const anySet = new Set<string>()
-      for (const compType of criteria.any) {
+      for (const compType of queryCriteria.any) {
         const set = this.componentEntityIndex.get(compType)
         if (set) {
           for (const id of set) {
@@ -163,8 +240,8 @@ export class EntityQuery {
       candidates = new Set(this.entities.keys())
     }
 
-    if (criteria.none && criteria.none.length > 0) {
-      for (const compType of criteria.none) {
+    if (queryCriteria.none && queryCriteria.none.length > 0) {
+      for (const compType of queryCriteria.none) {
         const set = this.componentEntityIndex.get(compType)
         if (set) {
           for (const id of set) {
