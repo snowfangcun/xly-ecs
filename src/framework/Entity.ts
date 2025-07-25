@@ -13,9 +13,17 @@ import type { ComponentConstructor, ComponentType } from './Types'
 export type EntityId = string
 
 /**
+ * 组件会用到的实体接口
+ */
+export interface IComponent4Entity {
+  get id(): EntityId
+  getComponent<T extends Component>(componentType: ComponentType<T>): T | undefined
+}
+
+/**
  * 实体类，代表游戏世界中的一个实体
  */
-export class Entity {
+export class Entity implements IComponent4Entity {
   private readonly _components = new Map<ComponentConstructor, Component>()
   private _tags: Set<string>
 
@@ -74,6 +82,7 @@ export class Entity {
   ): T {
     const component = new comp(...args)
     this._components.set(comp, component)
+    component.owner = this
     component.onAdded?.()
     // 派发组件添加事件
     this.eventDispatcher?.emitEvent(new ComponentAddedEvent(this.id, comp))
@@ -90,6 +99,7 @@ export class Entity {
     if (!component) return
     component.onRemoved?.()
     this._components.delete(comp)
+    component.owner = undefined
     // 派发组件移除事件
     this.eventDispatcher?.emitEvent(new ComponentRemovedEvent(this.id, comp))
   }
