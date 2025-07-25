@@ -24,6 +24,8 @@ export class EntityQuery {
   // 组件类型索引，存储实体ID集合
   private componentEntityIndex: Map<ComponentType, Set<EntityId>> = new Map()
   private entities: Map<EntityId, Entity> = new Map()
+  /* 查询缓存 */
+  private queryCache: Map<string, EntityId[]> = new Map()
 
   constructor(private readonly eventDispatcher: EventDispatcher) {
     // 订阅组件添加事件
@@ -32,11 +34,14 @@ export class EntityQuery {
         const entity = this.entities.get(event.entityId)
         if (entity) {
           this.indexEntityComponent(entity, event.componentType)
+          // 清除缓存
+          this.clearCache()
         }
       } else if (event instanceof ComponentRemovedEvent) {
         const entity = this.entities.get(event.entityId)
         if (entity) {
           this.deindexEntityComponent(entity, event.componentType)
+          this.clearCache()
         }
       }
     })
@@ -44,11 +49,13 @@ export class EntityQuery {
 
   addEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
+    this.clearCache()
   }
 
   removeEntity(entity: Entity) {
     this.entities.delete(entity.id)
     this.removeEntityFromIndex(entity)
+    this.clearCache()
   }
 
   /**
@@ -89,7 +96,17 @@ export class EntityQuery {
     }
   }
 
+  private clearCache(): void {
+    this.queryCache.clear()
+  }
+
   query(criteria: QueryCriteria): Entity[] {
+    const cacheKey = JSON.stringify(criteria)
+    if (this.queryCache.has(cacheKey)) {
+      const cachedIds = this.queryCache.get(cacheKey)!
+      return cachedIds.map((id) => this.entities.get(id)!).filter(Boolean)
+    }
+
     if (
       (!criteria.all || criteria.all.length === 0) &&
       (!criteria.any || criteria.any.length === 0) &&
@@ -157,9 +174,9 @@ export class EntityQuery {
       }
     }
 
-    // Ensure a return value in all cases
-    return Array.from(candidates)
-      .map((id) => this.entities.get(id)!)
-      .filter(Boolean)
+    const resultIds = Array.from(candidates)
+    this.queryCache.set(cacheKey, resultIds)
+
+    return resultIds.map((id) => this.entities.get(id)!).filter(Boolean)
   }
 }

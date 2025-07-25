@@ -14,7 +14,19 @@ class PlayerComp extends Component {
   }
 }
 
+class EnemyComp extends Component {
+  constructor(public name: string) {
+    super()
+  }
+}
+
 class TestSys extends System {
+  constructor() {
+    super({
+      any: [PlayerComp, EnemyComp],
+    })
+  }
+
   update(entities: Entity[], deltaTime: number): void {
     for (const entity of entities) {
       const player = entity.getComponent(PlayerComp)
@@ -28,6 +40,9 @@ export function startGame() {
 
   const playerEntity = world.createEntity()
   playerEntity.addComponent(PlayerComp, '韩立')
+
+  const enemyEntity = world.createEntity()
+  enemyEntity.addComponent(EnemyComp, '小怪兽')
 
   world.addSystem(new TestSys())
 
