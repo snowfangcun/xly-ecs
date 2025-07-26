@@ -4,7 +4,12 @@ import type { ComponentType, SystemType } from './Types'
 /**
  * 事件基类
  */
-export abstract class Event {}
+export abstract class Event {
+  /**
+   * 事件时间戳
+   */
+  readonly timestamp: number = Date.now()
+}
 
 /**
  * 事件处理模式

@@ -3,6 +3,7 @@ import {
   ComponentAddedEvent,
   ComponentRemovedEvent,
   EntityAddTagEvent,
+  EntityRemoveTagEvent,
   type EventDispatcher,
 } from './Event'
 import type { PluginManager } from './Plugin'
@@ -52,6 +53,8 @@ export class Entity implements IComponent4Entity {
   addTag(tag: string): void {
     this._tags.add(tag)
     this.eventDispatcher.emitEvent(new EntityAddTagEvent(this.id, tag))
+    // 调用插件钩子
+    this.pluginManager.onEntityAddTag(this.id, tag)
   }
 
   /**
@@ -60,7 +63,9 @@ export class Entity implements IComponent4Entity {
    */
   removeTag(tag: string): void {
     this._tags.delete(tag)
-    this.eventDispatcher.emitEvent(new EntityAddTagEvent(this.id, tag))
+    this.eventDispatcher.emitEvent(new EntityRemoveTagEvent(this.id, tag))
+    // 调用插件钩子
+    this.pluginManager.onEntityRemoveTag(this.id, tag)
   }
 
   /**

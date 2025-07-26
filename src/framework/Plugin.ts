@@ -57,6 +57,20 @@ export interface Plugin {
   onEntityRemoved?(entityId: string): void
 
   /**
+   * 在实体添加标签时调用
+   * @param entityId 实体ID
+   * @param tag 标签
+   */
+  onEntityAddTag?(entityId: string, tag: string): void
+
+  /**
+   * 在实体移除标签时调用
+   * @param entityId 实体ID
+   * @param tag 标签
+   */
+  onEntityRemoveTag?(entityId: string, tag: string): void
+
+  /**
    * 在组件添加到实体时调用
    * @param entityId 实体ID
    * @param componentType 组件类型
@@ -176,6 +190,28 @@ export class PluginManager {
   onEntityRemoved(entityId: string): void {
     for (const plugin of this.plugins.values()) {
       plugin.onEntityRemoved?.(entityId)
+    }
+  }
+
+  /**
+   * 调用所有插件的onEntityAddTag钩子
+   * @param entityId 实体ID
+   * @param tag 标签
+   */
+  onEntityAddTag(entityId: string, tag: string): void {
+    for (const plugin of this.plugins.values()) {
+      plugin.onEntityAddTag?.(entityId, tag)
+    }
+  }
+
+  /**
+   * 调用所有插件的onEntityRemoveTag钩子
+   * @param entityId 实体ID
+   * @param tag 标签
+   */
+  onEntityRemoveTag(entityId: string, tag: string): void {
+    for (const plugin of this.plugins.values()) {
+      plugin.onEntityRemoveTag?.(entityId, tag)
     }
   }
 
