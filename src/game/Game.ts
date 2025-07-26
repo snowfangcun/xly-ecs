@@ -1,14 +1,20 @@
 import { World } from '@/framework'
 import { PlayerCore } from './player/PlayerComp'
-import { XiulianSystem } from './player/XiulianSystem'
+import { GongfaSystem } from './player/GongfaSystem'
+import { StuffBox } from './stuff/StuffComp'
 
 export function startGame() {
   const world = new World()
 
   const playerEntity = world.createEntity()
-  playerEntity.addComponent(PlayerCore, '韩立', 0, 1)
+  playerEntity.addComponent(PlayerCore, {
+    name: '韩立',
+    lv: 1,
+    exp: 0,
+  })
+  playerEntity.addComponent(StuffBox, { items: [] })
 
-  world.addSystem(XiulianSystem)
+  world.addSystem(GongfaSystem)
 
   setInterval(() => {
     world.update(1)

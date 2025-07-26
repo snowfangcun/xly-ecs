@@ -1,7 +1,10 @@
 import { Entity, System } from '@/framework'
 import { PlayerCore } from './PlayerComp'
 
-export class XiulianSystem extends System {
+/**
+ * 角色功法系统
+ */
+export class GongfaSystem extends System {
   constructor() {
     super({ all: [PlayerCore] })
   }
