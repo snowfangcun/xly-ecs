@@ -11,8 +11,9 @@ export interface Plugin {
   /**
    * 插件安装时调用
    * @param world 插件被安装到的世界
+   * @param context 插件上下文，用于在插件之间共享数据
    */
-  onInstall?(world: World): void
+  onInstall?(world: World, context: PluginContext): void
 
   /**
    * 插件卸载时调用
@@ -121,13 +122,86 @@ export interface PluginMetadata {
 }
 
 /**
+ * 插件上下文接口，用于在插件之间共享数据
+ */
+export interface PluginContext {
+  /**
+   * 设置上下文数据
+   * @param key 数据键名
+   * @param value 数据值
+   */
+  set<T>(key: string, value: T): void
+
+  /**
+   * 获取上下文数据
+   * @param key 数据键名
+   * @returns 数据值
+   */
+  get<T>(key: string): T | undefined
+
+  /**
+   * 删除上下文数据
+   * @param key 数据键名
+   * @returns 是否删除成功
+   */
+  delete(key: string): boolean
+
+  /**
+   * 检查是否存在指定键名的数据
+   * @param key 数据键名
+   * @returns 是否存在
+   */
+  has(key: string): boolean
+
+  /**
+   * 清空所有上下文数据
+   */
+  clear(): void
+}
+
+/**
+ * 插件上下文实现类
+ */
+class PluginContextImpl implements PluginContext {
+  private readonly data: Map<string, any> = new Map()
+
+  set<T>(key: string, value: T): void {
+    this.data.set(key, value)
+  }
+
+  get<T>(key: string): T | undefined {
+    return this.data.get(key)
+  }
+
+  delete(key: string): boolean {
+    return this.data.delete(key)
+  }
+
+  has(key: string): boolean {
+    return this.data.has(key)
+  }
+
+  clear(): void {
+    this.data.clear()
+  }
+}
+
+/**
  * 插件管理器类，用于管理和安装插件
  */
 export class PluginManager {
   private readonly plugins: Map<PluginType, Plugin> = new Map()
   private readonly pluginMetadata: Map<PluginType, PluginMetadata> = new Map()
+  private readonly context: PluginContext = new PluginContextImpl()
 
   constructor(private readonly world: World) {}
+
+  /**
+   * 获取插件上下文
+   */
+  getContext(): PluginContext {
+    return this.context
+  }
 
   /**
    * 安装插件
@@ -167,7 +241,7 @@ export class PluginManager {
     this.sortPluginsByPriority()
 
     // 调用插件的安装钩子
-    plugin.onInstall?.(this.world)
+    plugin.onInstall?.(this.world, this.context)
   }
 
   /**
