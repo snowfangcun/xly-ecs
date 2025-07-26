@@ -5,6 +5,7 @@ import {
   EntityAddTagEvent,
   type EventDispatcher,
 } from './Event'
+import type { PluginManager } from './Plugin'
 import type { ComponentConstructor, ComponentType } from './Types'
 
 /**
@@ -30,6 +31,7 @@ export class Entity implements IComponent4Entity {
   constructor(
     readonly id: string,
     private readonly eventDispatcher: EventDispatcher,
+    private readonly pluginManager: PluginManager,
     tags: string[] = [],
   ) {
     this._tags = new Set(tags)
@@ -87,6 +89,8 @@ export class Entity implements IComponent4Entity {
     component.onAdded?.()
     // 派发组件添加事件
     this.eventDispatcher?.emitEvent(new ComponentAddedEvent(this.id, comp))
+    // 调用插件钩子
+    this.pluginManager?.onComponentAdded(this.id, comp)
     return component
   }
 
@@ -104,6 +108,8 @@ export class Entity implements IComponent4Entity {
     component.eventDispatcher = undefined
     // 派发组件移除事件
     this.eventDispatcher?.emitEvent(new ComponentRemovedEvent(this.id, comp))
+    // 调用插件钩子
+    this.pluginManager?.onComponentRemoved(this.id, comp)
   }
 
   getComponent<T extends Component>(compType: ComponentType<T>): T | undefined {

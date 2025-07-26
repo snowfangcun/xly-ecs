@@ -10,6 +10,7 @@ import {
   SystemRemovedEvent,
   type Event,
 } from './Event'
+import { PluginManager } from './Plugin'
 import type { System } from './System'
 import type { SystemType } from './Types'
 
@@ -23,16 +24,20 @@ export class World {
   private readonly eventDispatcher = new EventDispatcher()
   public readonly event$ = this.eventDispatcher.event$
   private entityQuery: EntityQuery = new EntityQuery(this.eventDispatcher)
+  // 添加插件管理器
+  private readonly pluginManager: PluginManager = new PluginManager(this)
 
   /**
    * 创建实体
    * @returns
    */
   createEntity(tags: string[] = []): Entity {
-    const entity = new Entity(crypto.randomUUID(), this.eventDispatcher, tags)
+    const entity = new Entity(crypto.randomUUID(), this.eventDispatcher, this.pluginManager, tags)
     this.entityQuery.addEntity(entity)
     /* 派发实体创建事件，此事件会延迟到帧末尾派发 */
     this.eventDispatcher.emitEvent(new EntityCreatedEvent(entity.id), EventDispatchMode.EndOfFrame)
+    // 调用插件钩子
+    this.pluginManager.onEntityCreated(entity.id)
     return entity
   }
 
@@ -47,6 +52,8 @@ export class World {
       new EntityRemovedEvent(entityInstance.id),
       EventDispatchMode.EndOfFrame,
     )
+    // 调用插件钩子
+    this.pluginManager.onEntityRemoved(entityInstance.id)
   }
 
   /**
@@ -66,6 +73,8 @@ export class World {
     systemInstance.onAddedToWorld(this)
     /* 派发系统添加事件，此事件会延迟到帧末尾派发 */
     this.eventDispatcher.emitEvent(new SystemAddedEvent(systemType), EventDispatchMode.EndOfFrame)
+    // 调用插件钩子
+    this.pluginManager.onSystemAdded(systemInstance)
     return this
   }
 
@@ -86,6 +95,8 @@ export class World {
         new SystemRemovedEvent(s.systemType),
         EventDispatchMode.EndOfFrame,
       )
+      // 调用插件钩子
+      this.pluginManager.onSystemRemoved(s.system)
       s.system.world = undefined
     }
     return this
@@ -107,12 +118,19 @@ export class World {
   async update(deltaTime: number): Promise<void> {
     /* 如果世界为暂停状态则不更新 */
     if (this._paused) return
+
+    // 调用插件预更新钩子
+    this.pluginManager.preUpdate(deltaTime)
+
     /* 筛选出启用的系统 */
     const enabledSystems = this._systems.filter((s) => s.system.enabled)
     const promises = enabledSystems.map((s) => {
       this.executeSystemFrameUpdate(s.system, deltaTime)
     })
     await Promise.all(promises)
+
+    // 调用插件后更新钩子
+    this.pluginManager.postUpdate(deltaTime)
 
     // 处理帧结束事件
     this.eventDispatcher.processFrameEndEvents()
@@ -141,5 +159,7 @@ export class World {
    */
   emitEvent(event: Event, mode: EventDispatchMode = EventDispatchMode.Immediate): void {
     this.eventDispatcher.emitEvent(event, mode)
+    // 调用插件钩子
+    this.pluginManager.onEventDispatched(event)
   }
 }
