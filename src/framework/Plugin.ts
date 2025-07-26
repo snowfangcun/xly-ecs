@@ -229,12 +229,15 @@ export class PluginManager {
         }
       }
     }
-    const plugin = new pluginType(...args)
-    this.pluginMetadata.set(pluginType, metadata)
+
     // 检查是否已安装
     if (this.plugins.has(pluginType)) {
       throw new Error(`插件 ${pluginType.name} 已经安装`)
     }
+
+    const plugin = new pluginType(...args)
+    this.pluginMetadata.set(pluginType, metadata)
+
     this.plugins.set(pluginType, plugin)
 
     // 按优先级排序
