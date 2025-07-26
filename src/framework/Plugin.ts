@@ -93,11 +93,40 @@ export interface Plugin {
 
 export type PluginType<T extends Plugin = Plugin> = new (...args: any[]) => T
 
+export interface PluginMetadata {
+  /**
+   * 插件名称
+   */
+  name: string
+
+  /**
+   * 插件版本
+   */
+  version?: string
+
+  /**
+   * 插件描述
+   */
+  description?: string
+
+  /**
+   * 插件优先级，数值越高优先级越高
+   */
+  priority?: number
+
+  /**
+   * 依赖的插件列表
+   */
+  dependencies?: string[]
+}
+
 /**
  * 插件管理器类，用于管理和安装插件
  */
 export class PluginManager {
   private readonly plugins: Map<PluginType, Plugin> = new Map()
+  private readonly pluginMetadata: Map<PluginType, PluginMetadata> = new Map()
+
   constructor(private readonly world: World) {}
 
   /**
@@ -107,16 +136,58 @@ export class PluginManager {
    */
   install<T extends Plugin, P extends PluginType<T>>(
     pluginType: P,
+    metadata: PluginMetadata,
     ...args: ConstructorParameters<P>
   ) {
+    // 检查依赖
+    if (metadata?.dependencies) {
+      for (const depName of metadata.dependencies) {
+        let found = false
+        for (const [type] of this.plugins) {
+          const pluginMeta = this.pluginMetadata.get(type)
+          if (pluginMeta?.name === depName) {
+            found = true
+            break
+          }
+        }
+        if (!found) {
+          throw new Error(`插件 ${metadata.name} 依赖于插件 ${depName}，但该插件未安装`)
+        }
+      }
+    }
     const plugin = new pluginType(...args)
+    this.pluginMetadata.set(pluginType, metadata)
     // 检查是否已安装
     if (this.plugins.has(pluginType)) {
       throw new Error(`插件 ${pluginType.name} 已经安装`)
     }
     this.plugins.set(pluginType, plugin)
+
+    // 按优先级排序
+    this.sortPluginsByPriority()
+
     // 调用插件的安装钩子
     plugin.onInstall?.(this.world)
+  }
+
+  /**
+   * 按优先级排序插件
+   */
+  private sortPluginsByPriority(): void {
+    // 获取所有插件及其元数据
+    const pluginsWithMeta = Array.from(this.plugins.entries()).map(([type, plugin]) => {
+      const meta = this.pluginMetadata.get(type)
+      return { type, plugin, priority: meta?.priority ?? 0 }
+    })
+
+    // 按优先级降序排序
+    pluginsWithMeta.sort((a, b) => b.priority - a.priority)
+
+    // 重新插入Map以保证遍历顺序
+    this.plugins.clear()
+    for (const { type, plugin } of pluginsWithMeta) {
+      this.plugins.set(type, plugin)
+    }
   }
 
   /**
@@ -128,6 +199,23 @@ export class PluginManager {
     if (!plugin) {
       throw new Error(`插件 ${pluginType.name} 未安装`)
     }
+
+    // 检查是否有其他插件依赖于该插件
+    const pluginMeta = this.pluginMetadata.get(pluginType)
+    if (pluginMeta?.name) {
+      for (const [type] of this.plugins) {
+        // 跳过正在卸载的插件本身
+        if (type === pluginType) continue
+
+        const otherPluginMeta = this.pluginMetadata.get(type)
+        if (otherPluginMeta?.dependencies?.includes(pluginMeta.name)) {
+          throw new Error(
+            `无法卸载插件 ${pluginMeta.name}，因为插件 ${otherPluginMeta.name} 依赖于它`,
+          )
+        }
+      }
+    }
+
     // 调用插件的卸载钩子
     plugin.onUninstall?.(this.world)
     this.plugins.delete(pluginType)
