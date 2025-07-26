@@ -296,6 +296,7 @@ export class PluginManager {
     // 调用插件的卸载钩子
     plugin.onUninstall?.(this.world)
     this.plugins.delete(pluginType)
+    this.pluginMetadata.delete(pluginType)
   }
 
   /**
