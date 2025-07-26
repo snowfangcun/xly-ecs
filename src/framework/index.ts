@@ -2,7 +2,7 @@ import { Component } from './Component'
 import { Entity } from './Entity'
 import { type QueryCriteria, QueryCriteriaBuilder } from './EntityQuery'
 import { Event, EventDispatchMode } from './Event'
-import { PluginManager, type Plugin } from './Plugin'
+import { PluginManager, type Plugin, type PluginContext } from './Plugin'
 import { System } from './System'
 import { World } from './World'
 
@@ -16,4 +16,5 @@ export {
   QueryCriteriaBuilder,
   PluginManager,
 }
+export type { PluginContext }
 export type { QueryCriteria, Plugin }

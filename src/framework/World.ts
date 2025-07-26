@@ -10,7 +10,7 @@ import {
   SystemRemovedEvent,
   type Event,
 } from './Event'
-import { PluginManager } from './Plugin'
+import { PluginManager, type Plugin, type PluginMetadata, type PluginType } from './Plugin'
 import type { System } from './System'
 import type { SystemType } from './Types'
 
@@ -161,5 +161,26 @@ export class World {
     this.eventDispatcher.emitEvent(event, mode)
     // 调用插件钩子
     this.pluginManager.onEventDispatched(event)
+  }
+
+  /**
+   * 安装插件
+   * @param pluginType 插件类型
+   * @param args 插件构造函数的参数
+   */
+  installPlugin<T extends Plugin, P extends PluginType<T>>(
+    pluginType: P,
+    metadata: PluginMetadata,
+    ...args: ConstructorParameters<P>
+  ) {
+    this.pluginManager.install(pluginType, metadata, ...args)
+  }
+
+  /**
+   * 卸载插件
+   * @param pluginType 插件类型
+   */
+  uninstall<T extends Plugin>(pluginType: PluginType<T>) {
+    this.pluginManager.uninstall(pluginType)
   }
 }
