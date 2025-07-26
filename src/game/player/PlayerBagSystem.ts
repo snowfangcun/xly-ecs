@@ -16,7 +16,6 @@ export class PlayerBagSystem extends System {
   }
 
   private onPlayerBagAddItem(event: PlayerBagAddItemEvent) {
-    console.log(`添加物品${event.key}x${event.count}`)
     this.addQueue.push({
       key: event.key,
       count: event.count,
