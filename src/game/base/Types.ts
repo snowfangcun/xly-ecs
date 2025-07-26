@@ -3,6 +3,7 @@ export type BaseStuffResources = {
   name: string
   desc: string
   isStackable: boolean
+  useOptions: readonly string[]
 }
 
 /**
@@ -10,7 +11,6 @@ export type BaseStuffResources = {
  */
 export type GongfaResources = BaseStuffResources & {
   isStackable: false
-  useOptions: readonly string[]
 }
 
 /**

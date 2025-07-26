@@ -24,7 +24,7 @@ export class StuffBox extends Component {
     if (!res.isStackable) {
       // 当不可堆叠时候，重复添加count次1个物品
       times(count, () => {
-        this.addNew(res.name, 1, data)
+        this.addNew(key, 1, data)
       })
     } else {
       this.addOver(key, count, data)
