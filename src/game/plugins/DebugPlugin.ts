@@ -14,7 +14,7 @@ export class DebugPlugin extends Plugin {
   onEventDispatched(event: Event): void {
     if (event instanceof PlayerBagAddItemEvent) {
       const res = stuffResourcesLoader.get(event.key)
-      console.log(`[角色储物]增加物品: ${res.name}, 数量: ${event.count}`)
+      this.print(`角色背包增加物品: ${res.name}, 数量: ${event.count}`)
     }
   }
 }

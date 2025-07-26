@@ -133,8 +133,62 @@ export abstract class Plugin {
    */
   onEventDispatched?(event: Event): void
 
+  /**
+   * 打印带有插件名称的格式化消息
+   * @param args 要打印的消息参数
+   */
   protected print(...args: any[]) {
-    console.log(...args)
+    const pluginName = this.metadata?.name || this.constructor.name;
+    const formattedArgs = [
+      `%c[Plugin:${pluginName}]`,
+      'color: #42b983; font-weight: bold;',
+      ...args
+    ];
+    console.log(...formattedArgs);
+  }
+  
+  /**
+   * 打印带时间戳的格式化消息
+   * @param args 要打印的消息参数
+   */
+  protected printWithTimestamp(...args: any[]) {
+    const pluginName = this.metadata?.name || this.constructor.name;
+    const timestamp = new Date().toLocaleTimeString();
+    const formattedArgs = [
+      `%c[Plugin:${pluginName}]%c[${timestamp}]`,
+      'color: #42b983; font-weight: bold;',
+      'color: #888; font-weight: normal;',
+      ...args
+    ];
+    console.log(...formattedArgs);
+  }
+  
+  /**
+   * 打印错误消息
+   * @param args 要打印的错误消息参数
+   */
+  protected printError(...args: any[]) {
+    const pluginName = this.metadata?.name || this.constructor.name;
+    const formattedArgs = [
+      `%c[Plugin:${pluginName}][ERROR]`,
+      'color: #e74c3c; font-weight: bold;',
+      ...args
+    ];
+    console.error(...formattedArgs);
+  }
+  
+  /**
+   * 打印警告消息
+   * @param args 要打印的警告消息参数
+   */
+  protected printWarning(...args: any[]) {
+    const pluginName = this.metadata?.name || this.constructor.name;
+    const formattedArgs = [
+      `%c[Plugin:${pluginName}][WARN]`,
+      'color: #f39c12; font-weight: bold;',
+      ...args
+    ];
+    console.warn(...formattedArgs);
   }
 }
 
