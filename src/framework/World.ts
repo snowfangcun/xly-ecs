@@ -20,7 +20,7 @@ export class World {
   }[] = []
   /* 暂停 */
   private _paused = false
-  private eventDispatcher = new EventDispatcher()
+  private readonly eventDispatcher = new EventDispatcher()
   public readonly event$ = this.eventDispatcher.event$
   private entityQuery: EntityQuery = new EntityQuery(this.eventDispatcher)
 
@@ -55,6 +55,7 @@ export class World {
   addSystem<T extends System>(systemType: SystemType<T>, priority: number = 1): this {
     const systemInstance = new systemType()
     systemInstance.priority = priority
+    systemInstance.world = this
     this._systems.push({
       system: systemInstance,
       systemType,
@@ -85,6 +86,7 @@ export class World {
         new SystemRemovedEvent(s.systemType),
         EventDispatchMode.EndOfFrame,
       )
+      s.system.world = undefined
     }
     return this
   }

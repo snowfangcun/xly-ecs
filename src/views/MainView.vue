@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ClickText from '@/components/ClickText.vue'
+import router from '@/router'
 import { useGameStore } from '@/stores/game'
 const game = useGameStore()
 </script>
@@ -10,6 +11,13 @@ const game = useGameStore()
       >(lv{{ game.lv }})<br />
       <span>修为：{{ game.exp }}</span>
     </div>
-    <div><ClickText text="储物" />|<ClickText text="功法" /></div>
+    <div>
+      <ClickText text="储物" v-on:click="() => router.push({ name: 'bag' })" />|<ClickText
+        text="功法"
+      />
+    </div>
+  </div>
+  <div>
+    <ClickText text="控制台" v-on:click="() => router.push({ name: 'dev' })" />
   </div>
 </template>

@@ -11,7 +11,7 @@ import { QueryCriteriaBuilder, type QueryCriteria } from './EntityQuery'
 export abstract class System {
   private _enabled = true
   private _priority = 0
-  protected world: World | undefined = undefined
+  public world: World | undefined = undefined
   private subscriptions: Subscription[] = []
   public readonly queryCriteriaBuilder = new QueryCriteriaBuilder()
 
@@ -77,18 +77,16 @@ export abstract class System {
     eventType: EventType<T>,
     callback: (event: T) => void,
   ): Subscription | undefined {
-    const subscription = this.world?.event$
-      .pipe(
-        filter((event) => event instanceof eventType),
-        map((event) => event as T),
-      )
-      .subscribe((event) => {
-        try {
-          callback(event)
-        } catch (error) {
-          console.error(`Error in event handler for ${eventType.name}:`, error)
-        }
-      })
+    const subscription = this.world!.event$.pipe(
+      filter((event) => event instanceof eventType),
+      map((event) => event as T),
+    ).subscribe((event) => {
+      try {
+        callback(event)
+      } catch (error) {
+        console.error(`Error in event handler for ${eventType.name}:`, error)
+      }
+    })
     if (subscription) {
       this.subscriptions.push(subscription)
     }

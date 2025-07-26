@@ -9,10 +9,14 @@ export class PlayerBagSystem extends System {
 
   constructor() {
     super({ all: [PlayerCore, StuffBox] })
+  }
+
+  onAddedToWorld(): void {
     this.eventSubscribe(PlayerBagAddItemEvent, this.onPlayerBagAddItem.bind(this))
   }
 
   private onPlayerBagAddItem(event: PlayerBagAddItemEvent) {
+    console.log(`添加物品${event.key}x${event.count}`)
     this.addQueue.push({
       key: event.key,
       count: event.count,
@@ -27,5 +31,6 @@ export class PlayerBagSystem extends System {
       // 处理物品添加
       this.addQueue.forEach((i) => bag.addItem(i.key, i.count, i.data))
     })
+    this.addQueue = []
   }
 }
