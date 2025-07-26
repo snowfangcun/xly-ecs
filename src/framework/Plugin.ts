@@ -4,10 +4,52 @@ import type { System } from './System'
 import type { ComponentType } from './Types'
 import type { World } from './World'
 
+export interface PluginMetadata {
+  /**
+   * 插件名称
+   */
+  name: string
+
+  /**
+   * 插件版本
+   */
+  version?: string
+
+  /**
+   * 插件描述
+   */
+  description?: string
+
+  /**
+   * 插件优先级，数值越高优先级越高
+   */
+  priority?: number
+
+  /**
+   * 依赖的插件列表
+   */
+  dependencies?: string[]
+}
+
 /**
  * 插件接口
  */
 export abstract class Plugin {
+  protected _metadata: PluginMetadata | null = null;
+  
+  /**
+   * 获取插件元数据
+   */
+  get metadata(): PluginMetadata | null {
+    return this._metadata;
+  }
+
+  /**
+   * 设置插件元数据
+   */
+  set metadata(value: PluginMetadata | null) {
+    this._metadata = value;
+  }
   /**
    * 插件安装时调用
    * @param world 插件被安装到的世界
@@ -97,33 +139,6 @@ export abstract class Plugin {
 }
 
 export type PluginType<T extends Plugin = Plugin> = new (...args: any[]) => T
-
-export interface PluginMetadata {
-  /**
-   * 插件名称
-   */
-  name: string
-
-  /**
-   * 插件版本
-   */
-  version?: string
-
-  /**
-   * 插件描述
-   */
-  description?: string
-
-  /**
-   * 插件优先级，数值越高优先级越高
-   */
-  priority?: number
-
-  /**
-   * 依赖的插件列表
-   */
-  dependencies?: string[]
-}
 
 /**
  * 插件上下文接口，用于在插件之间共享数据
@@ -221,9 +236,8 @@ export class PluginManager {
     if (metadata?.dependencies) {
       for (const depName of metadata.dependencies) {
         let found = false
-        for (const [type] of this.plugins) {
-          const pluginMeta = this.pluginMetadata.get(type)
-          if (pluginMeta?.name === depName) {
+        for (const plugin of this.plugins.values()) {
+          if (plugin.metadata?.name === depName) {
             found = true
             break
           }
@@ -240,7 +254,7 @@ export class PluginManager {
     }
 
     const plugin = new pluginType(...args)
-    this.pluginMetadata.set(pluginType, metadata)
+    plugin.metadata = metadata
 
     this.plugins.set(pluginType, plugin)
 
@@ -257,8 +271,7 @@ export class PluginManager {
   private sortPluginsByPriority(): void {
     // 获取所有插件及其元数据
     const pluginsWithMeta = Array.from(this.plugins.entries()).map(([type, plugin]) => {
-      const meta = this.pluginMetadata.get(type)
-      return { type, plugin, priority: meta?.priority ?? 0 }
+      return { type, plugin, priority: plugin.metadata?.priority ?? 0 }
     })
 
     // 按优先级降序排序
@@ -282,16 +295,14 @@ export class PluginManager {
     }
 
     // 检查是否有其他插件依赖于该插件
-    const pluginMeta = this.pluginMetadata.get(pluginType)
-    if (pluginMeta?.name) {
-      for (const [type] of this.plugins) {
+    if (plugin.metadata?.name) {
+      for (const [type, otherPlugin] of this.plugins) {
         // 跳过正在卸载的插件本身
         if (type === pluginType) continue
 
-        const otherPluginMeta = this.pluginMetadata.get(type)
-        if (otherPluginMeta?.dependencies?.includes(pluginMeta.name)) {
+        if (otherPlugin.metadata?.dependencies?.includes(plugin.metadata.name)) {
           throw new Error(
-            `无法卸载插件 ${pluginMeta.name}，因为插件 ${otherPluginMeta.name} 依赖于它`,
+            `无法卸载插件 ${plugin.metadata.name}，因为插件 ${otherPlugin.metadata.name} 依赖于它`,
           )
         }
       }
@@ -300,7 +311,6 @@ export class PluginManager {
     // 调用插件的卸载钩子
     plugin.onUninstall?.(this.world)
     this.plugins.delete(pluginType)
-    this.pluginMetadata.delete(pluginType)
   }
 
   /**
