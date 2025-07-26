@@ -34,22 +34,22 @@ const defaultTheme: Theme = {
     normal: {
       textColor: '#000',
       bgColor: '#fff',
-      textSize: 12,
+      textSize: 18,
     },
     click: {
       textColor: '#fff',
       bgColor: '#000',
-      textSize: 12,
+      textSize: 18,
     },
     disable: {
       textColor: '#999',
       bgColor: '#eee',
-      textSize: 12,
+      textSize: 18,
     },
     hover: {
       textColor: '#000',
       bgColor: '#fff',
-      textSize: 12,
+      textSize: 18,
     },
   },
 }

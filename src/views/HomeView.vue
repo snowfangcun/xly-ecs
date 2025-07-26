@@ -13,7 +13,7 @@ const clickEvent = () => startGame()
       text="进入游戏"
       @click="
         () => {
-          router.push({ name: 'home' })
+          router.push({ name: 'main' })
         }
       "
     />

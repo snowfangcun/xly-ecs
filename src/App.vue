@@ -6,7 +6,18 @@ import ThemeProvider, { type Theme } from './components/ThemeProvider.vue'
 const theme = ref<Theme>({
   clickText: {
     normal: {
-      textColor: '#1d953f',
+      bgColor: 'transparent',
+      textColor: '#2570a1',
+      textSize: 20,
+    },
+    click: {
+      bgColor: '#145b7d',
+      textColor: '#fffef9',
+      textSize: 20,
+    },
+    hover: {
+      bgColor: 'transparent',
+      textColor: '#145b7d',
       textSize: 20,
     },
   },

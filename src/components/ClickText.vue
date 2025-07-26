@@ -21,8 +21,7 @@ const computedStyle = computed(() => {
     color: currentState?.textColor || '#000',
     backgroundColor: currentState?.bgColor || '#fff',
     fontSize: `${currentState?.textSize || 12}px`,
-    padding: '4px 8px',
-    borderRadius: '4px',
+    padding: '1px 1px',
     cursor: 'pointer',
     display: 'inline-block',
     transition: 'all 0.3s ease',
@@ -33,6 +32,7 @@ const computedStyle = computed(() => {
 
 <template>
   <span
+    class="click-text"
     :style="computedStyle"
     @click="() => emit('click')"
     @mouseover="state = 'hover'"
@@ -43,3 +43,10 @@ const computedStyle = computed(() => {
     {{ props.text }}
   </span>
 </template>
+
+<style lang="css" scoped>
+.click-text {
+  /* 禁止复制 */
+  user-select: none;
+}
+</style>
