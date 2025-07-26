@@ -17,6 +17,10 @@ export class PlayerCore extends Component {
     return this._data.lv
   }
 
+  get name() {
+    return this._data.name
+  }
+
   get gongfa(): Readonly<PlayerGongfaData | undefined> {
     return this._data.gongfa
   }
@@ -26,3 +30,8 @@ export class PlayerCore extends Component {
     console.log('addExp', val, this._data.exp)
   }
 }
+
+/**
+ * 玩家控制的角色
+ */
+export class P1 extends Component {}
