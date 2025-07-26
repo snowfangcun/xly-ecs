@@ -1,8 +1,8 @@
-import type { Event, Plugin, PluginContext, World } from '@/framework'
+import { Plugin, type Event, type PluginContext, type World } from '@/framework'
 import { PlayerBagAddItemEvent } from '../events/PlayerEvents'
 import { stuffResourcesLoader } from '../base/ResCenter'
 
-export class DebugPlugin implements Plugin {
+export class DebugPlugin extends Plugin {
   private world: World = null!
   private context: PluginContext = null!
 

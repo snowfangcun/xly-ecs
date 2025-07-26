@@ -7,7 +7,7 @@ import type { World } from './World'
 /**
  * 插件接口
  */
-export interface Plugin {
+export abstract class Plugin {
   /**
    * 插件安装时调用
    * @param world 插件被安装到的世界
@@ -90,6 +90,10 @@ export interface Plugin {
    * @param event 被派发的事件
    */
   onEventDispatched?(event: Event): void
+
+  protected print(...args: any[]) {
+    console.log(...args)
+  }
 }
 
 export type PluginType<T extends Plugin = Plugin> = new (...args: any[]) => T
