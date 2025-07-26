@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Event } from '@/framework'
 
 /**
@@ -10,6 +9,18 @@ export class PlayerBagAddItemEvent extends Event {
     public readonly key: string,
     public readonly count: number,
     public readonly data: any = undefined,
+  ) {
+    super()
+  }
+}
+
+/**
+ * 角色背包移除物品事件
+ */
+export class PlayerBagRemoveItemEvent extends Event {
+  constructor(
+    public readonly uuid: string,
+    public readonly count: number,
   ) {
     super()
   }

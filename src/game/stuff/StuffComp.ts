@@ -55,4 +55,19 @@ export class StuffBox extends Component {
       this.addNew(key, count, data)
     }
   }
+
+  /**
+   * 移除物品
+   * @param uuid
+   * @param count
+   */
+  removeItem(uuid: string, count: number) {
+    const item = this._data.items.find((i) => i.uuid === uuid)
+    if (item && item.count >= count) {
+      item.count -= count
+      if (item.count === 0) {
+        this._data.items.splice(this._data.items.indexOf(item), 1)
+      }
+    }
+  }
 }

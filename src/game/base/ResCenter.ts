@@ -9,6 +9,7 @@ export const gongfaResourcesLoader = new ObjectResourcesLoader<GongfaResources>(
     name: '长青功',
     desc: '长青功',
     isStackable: false,
+    useOptions: ['learn'],
   },
 })
 
