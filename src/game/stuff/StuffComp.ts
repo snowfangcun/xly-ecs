@@ -8,6 +8,10 @@ export class StuffBox extends Component {
     super()
   }
 
+  get data() {
+    return this._data
+  }
+
   /**
    * 添加物品
    * @param key

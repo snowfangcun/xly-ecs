@@ -1,3 +1,4 @@
+import type { StuffBoxData } from '@/game/base/Types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -5,5 +6,8 @@ export const useGameStore = defineStore('game', () => {
   const name = ref('')
   const exp = ref(0)
   const lv = ref(1)
-  return { name, exp, lv }
+  const bag = ref<StuffBoxData>({
+    items: [],
+  })
+  return { name, exp, lv, bag }
 })
