@@ -41,6 +41,7 @@ export type PlayerCoreData = {
  */
 export type StuffItem = {
   uuid: string
+  key: string
   count: number
   data?: any
 }

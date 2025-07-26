@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Event } from "@/framework";
+import { Event } from '@/framework'
 
+/**
+ * 角色背包添加物品事件
+ */
 export class PlayerBagAddItemEvent extends Event {
   constructor(
     public readonly key: string,

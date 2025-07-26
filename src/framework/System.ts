@@ -2,7 +2,7 @@ import { filter, map, Subscription } from 'rxjs'
 import type { EventType } from './Types'
 import type { World } from './World'
 import type { Entity } from './Entity'
-import { EventDispatchMode } from './Event'
+import { Event, EventDispatchMode } from './Event'
 import { QueryCriteriaBuilder, type QueryCriteria } from './EntityQuery'
 
 /**

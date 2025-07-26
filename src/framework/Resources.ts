@@ -1,4 +1,9 @@
-export abstract class BaseResourcesLoader<T> {
+export interface IResourcesLoader<T> {
+  get(key: string): T
+  has(key: string): boolean
+}
+
+export abstract class BaseResourcesLoader<T> implements IResourcesLoader<T> {
   protected readonly dic: Map<string, T> = new Map()
   /**
    * 注册资源
@@ -58,6 +63,10 @@ export abstract class BaseResourcesLoader<T> {
     }
     return res
   }
+
+  toExport(): IResourcesLoader<T> {
+    return this
+  }
 }
 
 /**
@@ -81,6 +90,22 @@ export class ObjectResourcesLoader<T extends object> extends BaseResourcesLoader
     /* 将资源对象冻结 */
     const obj = deepFreeze(resources)
     super.register(key, obj)
+  }
+
+  /**
+   * 合并资源
+   * @param res
+   * @returns
+   */
+  merge(...res: ObjectResourcesLoader<T>[]) {
+    for (const loader of res) {
+      for (const [key, value] of loader.dic) {
+        if (!this.dic.has(key)) {
+          this.register(key, value)
+        }
+      }
+    }
+    return this
   }
 }
 

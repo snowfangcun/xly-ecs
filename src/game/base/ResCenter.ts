@@ -1,5 +1,5 @@
 import { ObjectResourcesLoader } from '@/framework/Resources'
-import type { GongfaResources } from './Types'
+import type { BaseStuffResources, GongfaResources } from './Types'
 
 /**
  * 功法资源
@@ -11,3 +11,7 @@ export const gongfaResourcesLoader = new ObjectResourcesLoader<GongfaResources>(
     isStackable: false,
   },
 })
+
+export const stuffResourcesLoader = new ObjectResourcesLoader<BaseStuffResources>()
+  .merge(gongfaResourcesLoader)
+  .toExport()
