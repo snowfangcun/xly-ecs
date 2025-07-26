@@ -21,7 +21,6 @@ const computedStyle = computed(() => {
     color: currentState?.textColor || '#000',
     backgroundColor: currentState?.bgColor || '#fff',
     fontSize: `${currentState?.textSize || 12}px`,
-    padding: '1px 1px',
     cursor: 'pointer',
     display: 'inline-block',
     transition: 'all 0.3s ease',
