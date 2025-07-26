@@ -2,6 +2,7 @@
 import { Component } from '@/framework'
 import type { StuffBoxData } from '../base/Types'
 import { stuffResourcesLoader } from '../base/ResCenter'
+import { times } from 'lodash'
 
 export class StuffBox extends Component {
   constructor(private _data: StuffBoxData) {
@@ -21,7 +22,10 @@ export class StuffBox extends Component {
   addItem(key: string, count: number, data?: any) {
     const res = stuffResourcesLoader.get(key)
     if (!res.isStackable) {
-      this.addNew(key, count, data)
+      // 当不可堆叠时候，重复添加count次1个物品
+      times(count, () => {
+        this.addNew(res.name, 1, data)
+      })
     } else {
       this.addOver(key, count, data)
     }
