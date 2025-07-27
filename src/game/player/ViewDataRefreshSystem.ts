@@ -20,5 +20,6 @@ export class ViewDataRefreshSystem extends System {
     this.gameStore.exp = core.exp
     this.gameStore.lv = core.lv
     this.gameStore.bag = { ...bag.data }
+    if (core.gongfa) this.gameStore.gongfa = { ...core.gongfa }
   }
 }

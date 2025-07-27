@@ -24,10 +24,15 @@ const router = createRouter({
       name: 'dev',
       component: () => import('../views/DevView.vue'),
     },
-        {
+    {
       path: '/bag/:uuid',
       name: 'bagItem',
       component: () => import('../views/BagItemView.vue'),
+    },
+    {
+      path: '/gongfa',
+      name: 'gongfa',
+      component: () => import('../views/GongfaView.vue'),
     },
   ],
 })

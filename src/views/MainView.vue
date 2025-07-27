@@ -12,9 +12,8 @@ const game = useGameStore()
       <span>修为：{{ game.exp }}</span>
     </div>
     <div>
-      <ClickText text="储物" v-on:click="() => router.push({ name: 'bag' })" />|<ClickText
-        text="功法"
-      />
+      <ClickText text="储物" v-on:click="() => router.push({ name: 'bag' })" />|
+      <ClickText text="功法" v-on:click="() => router.push({ name: 'gongfa' })" />
     </div>
   </div>
   <div>

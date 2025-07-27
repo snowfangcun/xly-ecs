@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Entity, System } from '@/framework'
+import { gongfaResourcesLoader } from '../base/ResCenter'
+import type { StuffItem } from '../base/Types'
 import {
   PlayerBagAddItemEvent,
   PlayerBagRemoveItemEvent,
@@ -8,8 +10,6 @@ import {
 import { queryP1 } from '../query/Query'
 import { StuffBox } from '../stuff/StuffComp'
 import { PlayerCore } from './PlayerComp'
-import type { StuffItem } from '../base/Types'
-import { gongfaResourcesLoader } from '../base/ResCenter'
 
 export class PlayerBagSystem extends System {
   constructor() {
