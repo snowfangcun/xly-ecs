@@ -25,3 +25,20 @@ export class PlayerBagRemoveItemEvent extends Event {
     super()
   }
 }
+
+/**
+ * 角色背包使用物品事件
+ */
+export class PlayerBagUseItemEvent extends Event {
+  /**
+   * 使用物品
+   * @param uuid 物品唯一标识符
+   * @param option 使用选项
+   */
+  constructor(
+    public readonly uuid: string,
+    public readonly option: string,
+  ) {
+    super()
+  }
+}

@@ -5,7 +5,10 @@ import type { PlayerCoreData, PlayerGongfaData } from '../base/Types'
  * 角色核心组件
  */
 export class PlayerCore extends Component {
-  constructor(private _data: PlayerCoreData) {
+  constructor(
+    public readonly uid:string,
+    private _data: PlayerCoreData
+  ) {
     super()
   }
 

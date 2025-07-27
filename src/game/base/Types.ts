@@ -6,11 +6,15 @@ export type BaseStuffResources = {
   useOptions: readonly string[]
 }
 
+/* 功法持久化数据类型 */
+export type GongfaPerData = Record<string, any>
+
 /**
  * 功法资源数据类型
  */
 export type GongfaResources = BaseStuffResources & {
   isStackable: false
+  args: object
 }
 
 /**
@@ -22,7 +26,7 @@ export type PlayerGongfaData = {
   /** 功法修习的时长 */
   duration: number
   /** 功法数据 */
-  data?: any
+  data?: GongfaPerData
 }
 
 /**

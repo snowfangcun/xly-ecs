@@ -74,4 +74,17 @@ export class StuffBox extends Component {
       }
     }
   }
+
+  /**
+   * 获取物品
+   * @param uuid
+   * @returns
+   */
+  getItem(uuid: string) {
+    const item = this._data.items.find((i) => i.uuid === uuid)
+    if (!item) {
+      throw new Error(`Item with uuid ${uuid} not found`)
+    }
+    return item
+  }
 }

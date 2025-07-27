@@ -78,7 +78,7 @@ export class StringResourcesLoader extends BaseResourcesLoader<string> {}
  * 函数资源加载器
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class FunResources<TParam extends any[], TResult> extends BaseResourcesLoader<
+export class FunResourcesLoader<TParam extends any[], TResult> extends BaseResourcesLoader<
   (...args: TParam) => TResult
 > {}
 

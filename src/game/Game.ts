@@ -17,7 +17,7 @@ export function startGame() {
 
   const playerEntity = world.createEntity()
   playerEntity.addComponent(P1)
-  playerEntity.addComponent(PlayerCore, {
+  playerEntity.addComponent(PlayerCore, 'p1', {
     name: '韩立',
     lv: 1,
     exp: 0,
