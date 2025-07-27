@@ -70,7 +70,7 @@ export class World {
     /* 按照系统的优先级进行排序 */
     this._systems.sort((a, b) => b.system.priority - a.system.priority)
     /* 调用系统的onAddedToWorld生命周期方法 */
-    systemInstance.onAddedToWorld(this)
+    systemInstance.onAddedToWorld()
     /* 派发系统添加事件，此事件会延迟到帧末尾派发 */
     this.eventDispatcher.emitEvent(new SystemAddedEvent(systemType), EventDispatchMode.EndOfFrame)
     // 调用插件钩子

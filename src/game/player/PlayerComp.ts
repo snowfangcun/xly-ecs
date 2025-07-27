@@ -1,5 +1,10 @@
 import { Component } from '@/framework'
-import type { PlayerCoreData, PlayerGongfaData } from '../base/Types'
+import type {
+  GongfaPerData,
+  PlayerCoreData,
+  PlayerEventData,
+  PlayerGongfaData,
+} from '../base/Types'
 
 /**
  * 角色核心组件
@@ -28,6 +33,21 @@ export class PlayerCore extends Component {
     return this._data.gongfa
   }
 
+  get currentEvent(): Readonly<PlayerEventData> {
+    return this._data.currentEvent
+  }
+
+  set currentEvent(event: PlayerEventData) {
+    this._data.currentEvent = event
+  }
+
+  resetCurrentEvent() {
+    this._data.currentEvent = {
+      type: 'none',
+      data: {},
+    }
+  }
+
   addExp(val: number) {
     this._data.exp += val
   }
@@ -37,6 +57,15 @@ export class PlayerCore extends Component {
    */
   hasGongfa(): boolean {
     return !!this.gongfa
+  }
+
+  updataGongfa(duration: number, data: GongfaPerData) {
+    if (!this.gongfa) return
+    this._data.gongfa = {
+      ...this.gongfa,
+      duration: duration,
+      data: data,
+    }
   }
 
   /**

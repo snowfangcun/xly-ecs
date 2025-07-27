@@ -30,13 +30,14 @@ export const gongfaResourcesLoader = new ObjectResourcesLoader<GongfaResources>(
  * 功法效果触发器资源
  */
 export const gongfaTriggerResourcesLoader = new FunResourcesLoader<
-  [args: Record<string, any>, duration: number, data: GongfaPerData],
+  [uid: string, args: Record<string, any>, duration: number, data: GongfaPerData],
   {
     data: GongfaPerData
+    duration: number
     effects: Effect[]
   }
 >().registerBatch({
-  chang_qing_gong: (args, duration, data) => {
+  chang_qing_gong: (uid, args, duration, data) => {
     const executeCycle = args[EXECUTE_CYCLE] || 1
     const basicExp = args[BASIC_EXP] || 1
     const perCycle = data['cycle'] || 0
@@ -45,13 +46,15 @@ export const gongfaTriggerResourcesLoader = new FunResourcesLoader<
       data['cycle'] += 1
       return {
         data,
+        duration,
         effects: [],
       }
     }
     data['cycle'] = 0
     return {
       data,
-      effects: [new EffectAddExp('1', basicExp)],
+      duration: duration + 1,
+      effects: [new EffectAddExp(uid, basicExp)],
     }
   },
 })

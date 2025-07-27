@@ -39,11 +39,17 @@ export type PlayerGongfaData = {
  */
 export type PlayerEventType = 'none' | 'xiu_lian' | 'li_lian'
 
+export type PlayerEventData = {
+  type: PlayerEventType
+  data: Record<string, any>
+}
+
 export type PlayerCoreData = {
   name: string
   lv: number
   exp: number
   gongfa?: PlayerGongfaData
+  currentEvent: PlayerEventData
 }
 
 /**

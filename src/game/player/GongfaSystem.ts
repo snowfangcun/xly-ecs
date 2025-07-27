@@ -1,4 +1,7 @@
-import { Entity, System } from '@/framework'
+import { Entity, EventDispatchMode, System } from '@/framework'
+import { gongfaResourcesLoader, gongfaTriggerResourcesLoader } from '../base/ResCenter'
+import { PlayerFinishXiulian, PlayerStartXiulian } from '../events/PlayerEvents'
+import { queryPlayer } from '../query/Query'
 import { PlayerCore } from './PlayerComp'
 
 /**
@@ -8,10 +11,79 @@ export class GongfaSystem extends System {
   constructor() {
     super({ all: [PlayerCore] })
   }
+
+  onAddedToWorld(): void {
+    this.eventSubscribe(PlayerStartXiulian, this.onPlayerStartXiulian)
+    this.eventSubscribe(PlayerFinishXiulian, this.onPlayerFinishXiulian)
+  }
+
+  /**
+   * 开始修炼事件
+   * @param event
+   */
+  private onPlayerStartXiulian(event: PlayerStartXiulian): void {
+    const player = this.world!.query(queryPlayer).find(
+      (e) => e.getComponent(PlayerCore)!.uid === event.uid,
+    )
+
+    if (!player) throw new Error(`角色${event.uid}不存在`)
+
+    const core = player.getComponent(PlayerCore)!
+
+    if (!core.hasGongfa()) throw new Error(`角色${event.uid}没有功法`)
+
+    if (core.currentEvent.type !== 'none') {
+      core.currentEvent = {
+        type: 'xiu_lian',
+        data: {},
+      }
+    } else {
+      throw new Error(`角色${event.uid}正在进行其他事件`)
+    }
+  }
+
+  /**
+   * 结束修炼事件
+   * @param event
+   */
+  private onPlayerFinishXiulian(event: PlayerFinishXiulian): void {
+    const player = this.world!.query(queryPlayer).find(
+      (e) => e.getComponent(PlayerCore)!.uid === event.uid,
+    )
+
+    if (!player) throw new Error(`角色${event.uid}不存在`)
+
+    const core = player.getComponent(PlayerCore)!
+
+    if (core.currentEvent.type !== 'xiu_lian') throw new Error(`角色${event.uid}没有进行修练`)
+
+    core.resetCurrentEvent()
+  }
+
   update(entities: Entity[]): void {
     entities.forEach((e) => {
-      const core = e.getComponent(PlayerCore)
-      core?.addExp(1)
+      const core = e.getComponent(PlayerCore)!
+      if (core.currentEvent.type !== 'xiu_lian') return
+
+      const gfData = core.gongfa!
+
+      const res = gongfaResourcesLoader.get(gfData.key)
+      const gongfaTrigger = gongfaTriggerResourcesLoader.get(gfData.key)
+
+      const { data, effects, duration } = gongfaTrigger(
+        core.uid,
+        res.args,
+        gfData.duration,
+        gfData.data || {},
+      )
+
+      // 更新功法数据
+      core.updataGongfa(duration, data)
+
+      // 派发功法效果
+      effects.forEach((effect) => {
+        this.eventDispatch(effect, EventDispatchMode.EndOfFrame)
+      })
     })
   }
 }

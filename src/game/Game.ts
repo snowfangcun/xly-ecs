@@ -21,6 +21,10 @@ export function startGame() {
     name: '韩立',
     lv: 1,
     exp: 0,
+    currentEvent: {
+      type: 'none',
+      data: {},
+    },
   })
   playerEntity.addComponent(StuffBox, { items: [] })
 

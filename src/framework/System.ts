@@ -55,9 +55,7 @@ export abstract class System {
    * 系统添加到世界时调用
    * @param world 系统被添加到的世界实例
    */
-  onAddedToWorld(world: World): void {
-    this.world = world
-  }
+  onAddedToWorld(): void {}
 
   /**
    * 系统从世界移除时调用

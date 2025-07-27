@@ -44,3 +44,21 @@ export class PlayerBagUseItemEvent extends Event {
     super()
   }
 }
+
+/**
+ * 角色开始修练事件
+ */
+export class PlayerStartXiulian extends Event {
+  constructor(public readonly uid: string = 'p1') {
+    super()
+  }
+}
+
+/**
+ * 角色结束修练事件
+ */
+export class PlayerFinishXiulian extends Event {
+  constructor(public readonly uid: string = 'p1') {
+    super()
+  }
+}
