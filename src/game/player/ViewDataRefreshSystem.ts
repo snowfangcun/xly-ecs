@@ -19,6 +19,6 @@ export class ViewDataRefreshSystem extends System {
     this.gameStore.name = core.name
     this.gameStore.exp = core.exp
     this.gameStore.lv = core.lv
-    this.gameStore.bag = bag.data
+    this.gameStore.bag = { ...bag.data }
   }
 }
