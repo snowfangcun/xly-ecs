@@ -30,7 +30,6 @@ export class PlayerCore extends Component {
 
   addExp(val: number) {
     this._data.exp += val
-    console.log('addExp', val, this._data.exp)
   }
 
   /**

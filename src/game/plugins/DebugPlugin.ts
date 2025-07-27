@@ -1,5 +1,5 @@
 import { Plugin, type Event, type PluginContext, type World } from '@/framework'
-import { PlayerBagAddItemEvent } from '../events/PlayerEvents'
+import { PlayerBagAddItemEvent, PlayerBagUseItemEvent } from '../events/PlayerEvents'
 import { stuffResourcesLoader } from '../base/ResCenter'
 
 export class DebugPlugin extends Plugin {
@@ -15,6 +15,9 @@ export class DebugPlugin extends Plugin {
     if (event instanceof PlayerBagAddItemEvent) {
       const res = stuffResourcesLoader.get(event.key)
       this.print(`角色背包增加物品: ${res.name}, 数量: ${event.count}`)
+    } else if (event instanceof PlayerBagUseItemEvent) {
+      const res = stuffResourcesLoader.get(event.key)
+      this.print(`角色背包使用物品: ${res.name}, 选项: ${event.option}`)
     }
   }
 }

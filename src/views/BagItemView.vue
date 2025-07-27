@@ -51,7 +51,7 @@ function getItemOptionStr(option: string): string {
  */
 function useItem(option: string) {
   if (!item.value) return
-  world.emitEvent(new PlayerBagUseItemEvent(item.value.uuid, option))
+  world.emitEvent(new PlayerBagUseItemEvent(item.value.uuid, item.value.key, option))
 }
 </script>
 <template>
