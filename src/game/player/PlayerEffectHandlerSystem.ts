@@ -8,7 +8,7 @@ import { PlayerCore } from './PlayerComp'
  */
 export class PlayerEffectHandlerSystem extends System {
   onAddedToWorld(): void {
-    this.eventSubscribe(EffectAddExp, this.onEffectAddExp)
+    this.eventSubscribe(EffectAddExp, this.onEffectAddExp.bind(this))
   }
 
   /**

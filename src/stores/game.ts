@@ -1,4 +1,4 @@
-import type { PlayerGongfaData, StuffBoxData } from '@/game/base/Types'
+import type { PlayerEventData, PlayerGongfaData, StuffBoxData } from '@/game/base/Types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -10,5 +10,6 @@ export const useGameStore = defineStore('game', () => {
     items: [],
   })
   const gongfa = ref<PlayerGongfaData>()
-  return { name, exp, lv, bag, gongfa }
+  const currentEvent = ref<PlayerEventData>()
+  return { name, exp, lv, bag, gongfa, currentEvent }
 })

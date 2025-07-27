@@ -21,5 +21,6 @@ export class ViewDataRefreshSystem extends System {
     this.gameStore.lv = core.lv
     this.gameStore.bag = { ...bag.data }
     if (core.gongfa) this.gameStore.gongfa = { ...core.gongfa }
+    this.gameStore.currentEvent = { ...core.currentEvent }
   }
 }

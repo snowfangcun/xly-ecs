@@ -42,8 +42,8 @@ export const gongfaTriggerResourcesLoader = new FunResourcesLoader<
     const basicExp = args[BASIC_EXP] || 1
     const perCycle = data['cycle'] || 0
     // 周天检查
-    if (perCycle !== executeCycle) {
-      data['cycle'] += 1
+    if (perCycle < executeCycle) {
+      data['cycle'] = perCycle + 1
       return {
         data,
         duration,

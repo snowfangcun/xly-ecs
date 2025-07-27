@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import ClickText from '@/components/ClickText.vue'
 import { gongfaResourcesLoader } from '@/game/base/ResCenter'
+import { PlayerFinishXiulian, PlayerStartXiulian } from '@/game/events/PlayerEvents'
+import { getWorld } from '@/game/Game'
 import { useGameStore } from '@/stores/game'
 import { computed } from 'vue'
 
+const world = getWorld()
 const gameStore = useGameStore()
 
 const data = computed(() => {
@@ -13,6 +17,14 @@ const data = computed(() => {
     ...gameStore.gongfa,
   }
 })
+
+function start() {
+  world.emitEvent(new PlayerStartXiulian())
+}
+
+function finish() {
+  world.emitEvent(new PlayerFinishXiulian())
+}
 </script>
 <template>
   <div>
@@ -21,6 +33,14 @@ const data = computed(() => {
       ><br />
       <span>效果：{{ data?.res.effectStr() }}</span
       ><br />
+      <div v-if="gameStore.currentEvent?.type === 'none'">
+        <span>当前状态：未修炼</span><br />
+        <ClickText text="修炼" v-on:click="start" />
+      </div>
+      <div v-else>
+        <span>当前状态：修炼中</span><br />
+        <ClickText text="收工" v-on:click="finish" />
+      </div>
     </div>
     <div v-else>
       <span>尚未修习功法</span>

@@ -72,11 +72,9 @@ export class PlayerBagSystem extends System {
     }
     const playerCore = p1.getComponent(PlayerCore)!
     if (playerCore.hasGongfa()) {
-      console.log('已修习过功法')
-      return
+      throw new Error('已修习过功法')
     }
     playerCore.learnGongfa(item.key)
-    console.log(`修习功法: ${item.key}`)
     // 消费物品
     bag.removeItem(item.uuid, 1)
   }

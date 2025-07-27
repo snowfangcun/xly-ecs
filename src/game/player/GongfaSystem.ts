@@ -13,8 +13,8 @@ export class GongfaSystem extends System {
   }
 
   onAddedToWorld(): void {
-    this.eventSubscribe(PlayerStartXiulian, this.onPlayerStartXiulian)
-    this.eventSubscribe(PlayerFinishXiulian, this.onPlayerFinishXiulian)
+    this.eventSubscribe(PlayerStartXiulian, this.onPlayerStartXiulian.bind(this))
+    this.eventSubscribe(PlayerFinishXiulian, this.onPlayerFinishXiulian.bind(this))
   }
 
   /**
@@ -32,13 +32,13 @@ export class GongfaSystem extends System {
 
     if (!core.hasGongfa()) throw new Error(`角色${event.uid}没有功法`)
 
-    if (core.currentEvent.type !== 'none') {
+    if (core.currentEvent.type === 'none') {
       core.currentEvent = {
         type: 'xiu_lian',
         data: {},
       }
     } else {
-      throw new Error(`角色${event.uid}正在进行其他事件`)
+      throw new Error(`角色${event.uid}正在进行其他事件: ${core.currentEvent.type}`)
     }
   }
 
@@ -55,7 +55,7 @@ export class GongfaSystem extends System {
 
     const core = player.getComponent(PlayerCore)!
 
-    if (core.currentEvent.type !== 'xiu_lian') throw new Error(`角色${event.uid}没有进行修练`)
+    if (core.currentEvent.type !== 'xiu_lian') throw new Error(`角色${event.uid}没有进行修炼`)
 
     core.resetCurrentEvent()
   }
