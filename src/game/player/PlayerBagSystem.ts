@@ -57,9 +57,29 @@ export class PlayerBagSystem extends System {
     }
   }
 
+  /**
+   * 修习功法
+   * @param p1
+   * @param item
+   * @returns
+   */
   private learnGongfa(p1: Entity, item: StuffItem) {
-    const gongfaRes = gongfaResourcesLoader.get(item.key)
+    if (!gongfaResourcesLoader.has(item.key)) {
+      throw new Error(`功法资源不存在: ${item.key}`)
+    }
+    const bag = p1.getComponent(StuffBox)!
+    if (!bag.isCanRemoveItem(item.uuid, 1)) {
+      throw new Error(`背包中没有足够的物品: ${item.key}`)
+    }
     const playerCore = p1.getComponent(PlayerCore)!
+    if (playerCore.hasGongfa()) {
+      console.log('已修习过功法')
+      return
+    }
+    playerCore.learnGongfa(item.key)
+    console.log(`修习功法: ${item.key}`)
+    // 消费物品
+    bag.removeItem(item.uuid, 1)
   }
 
   update(): void {}

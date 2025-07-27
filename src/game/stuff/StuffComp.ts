@@ -61,6 +61,20 @@ export class StuffBox extends Component {
   }
 
   /**
+   * 检查是否可以移除物品
+   * @param uuid 物品uuid
+   * @param count 移除数量
+   * @returns
+   */
+  isCanRemoveItem(uuid: string, count: number) {
+    const item = this._data.items.find((i) => i.uuid === uuid)
+    if (item && item.count >= count) {
+      return true
+    }
+    return false
+  }
+
+  /**
    * 移除物品
    * @param uuid
    * @param count

@@ -6,8 +6,8 @@ import type { PlayerCoreData, PlayerGongfaData } from '../base/Types'
  */
 export class PlayerCore extends Component {
   constructor(
-    public readonly uid:string,
-    private _data: PlayerCoreData
+    public readonly uid: string,
+    private _data: PlayerCoreData,
   ) {
     super()
   }
@@ -31,6 +31,25 @@ export class PlayerCore extends Component {
   addExp(val: number) {
     this._data.exp += val
     console.log('addExp', val, this._data.exp)
+  }
+
+  /**
+   * 是否有功法
+   */
+  hasGongfa(): boolean {
+    return !!this.gongfa
+  }
+
+  /**
+   * 修习功法
+   * @param key
+   */
+  learnGongfa(key: string) {
+    this._data.gongfa = {
+      key,
+      duration: 0,
+      data: {},
+    }
   }
 }
 
