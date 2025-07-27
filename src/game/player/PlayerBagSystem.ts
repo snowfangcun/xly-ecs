@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Entity, System } from '@/framework'
 import { gongfaResourcesLoader } from '../base/ResCenter'
 import type { StuffItem } from '../base/Types'

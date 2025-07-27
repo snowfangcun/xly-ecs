@@ -5,6 +5,7 @@ import { StuffBox } from './stuff/StuffComp'
 import { ViewDataRefreshSystem } from './player/ViewDataRefreshSystem'
 import { PlayerBagSystem } from './player/PlayerBagSystem'
 import { DebugPlugin } from './plugins/DebugPlugin'
+import { PlayerEffectHandlerSystem } from './player/PlayerEffectHandlerSystem'
 
 let world: World
 
@@ -31,6 +32,7 @@ export function startGame() {
   world.addSystem(GongfaSystem)
   world.addSystem(PlayerBagSystem)
   world.addSystem(ViewDataRefreshSystem)
+  world.addSystem(PlayerEffectHandlerSystem, 10)
 
   setInterval(() => {
     world.update(1)
