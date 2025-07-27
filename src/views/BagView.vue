@@ -29,5 +29,8 @@ const items = computed(() => {
       />
       <span>x{{ item.count }}</span>
     </div>
+    <div v-if="items.length === 0">
+      <span>暂无物品</span>
+    </div>
   </div>
 </template>

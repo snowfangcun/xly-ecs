@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ClickText from '@/components/ClickText.vue'
 import { stuffResourcesLoader } from '@/game/base/ResCenter'
+import type { GongfaResources } from '@/game/base/Types'
 import { PlayerBagUseItemEvent } from '@/game/events/PlayerEvents'
 import { getWorld } from '@/game/Game'
 import router from '@/router'
@@ -17,11 +18,9 @@ const uuid = route.params.uuid as string
 
 const item = computed(() => {
   // 强制依赖 gameStore.bag 来确保响应性
-  const items = gameStore.bag.items
-  const i = items.find((item) => item.uuid === uuid)
-  console.log('=====')
+  const i = gameStore.bag.items.find((item) => item.uuid === uuid)
   if (!i) {
-    router.go(-1)
+    router.back()
     return undefined
   }
   const res = stuffResourcesLoader.get(i.key)
@@ -61,6 +60,10 @@ function useItem(option: string) {
     ><br />
     <span>数量：{{ item?.count }}</span
     ><br />
+    <template v-if="item?.res.type === 'gongfa'">
+      <span>效果：{{ (item.res as GongfaResources).effectStr() }}</span
+      ><br />
+    </template>
     <span>描述：{{ item?.res.desc }}</span>
   </div>
   <div>

@@ -12,12 +12,16 @@ const BASIC_EXP = 'BASIC_EXP'
 export const gongfaResourcesLoader = new ObjectResourcesLoader<GongfaResources>().registerBatch({
   chang_qing_gong: {
     name: '长青功',
+    type: 'gongfa',
     desc: '长青功',
     isStackable: false,
     useOptions: ['learn'],
     args: {
       EXECUTE_CYCLE: 2,
       BASIC_EXP: 1,
+    },
+    effectStr() {
+      return `运功时，每${this.args[EXECUTE_CYCLE]}秒，增加${this.args[BASIC_EXP]}点修为`
     },
   },
 })

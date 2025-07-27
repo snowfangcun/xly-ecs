@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+export type StuffType = 'gongfa' | 'other'
+
 export type BaseStuffResources = {
   name: string
+  type: StuffType
   desc: string
   isStackable: boolean
   useOptions: readonly string[]
@@ -13,8 +16,10 @@ export type GongfaPerData = Record<string, any>
  * 功法资源数据类型
  */
 export type GongfaResources = BaseStuffResources & {
+  type: 'gongfa'
   isStackable: false
-  args: object
+  args: Record<string, any>
+  effectStr: () => string
 }
 
 /**
