@@ -26,6 +26,25 @@ export function startGame() {
       type: 'none',
       data: {},
     },
+    lingRoot:{
+      metal: 0,
+      wood: 0,
+      water: 0,
+      fire: 0,
+      soil: 0
+    },
+    state:{
+      hp:0,
+      mp:0,
+      energy:0,
+      shenshi:0,
+    },
+    growAttr:{
+      lingPower: 0,
+      shenShi: 0,
+      tiPo: 0,
+      xinJing: 0
+    }
   })
   playerEntity.addComponent(StuffBox, { items: [] })
 

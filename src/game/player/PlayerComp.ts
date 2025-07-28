@@ -12,44 +12,52 @@ import type {
 export class PlayerCore extends Component {
   constructor(
     public readonly uid: string,
-    private _data: PlayerCoreData,
+    public readonly data: PlayerCoreData,
   ) {
     super()
   }
 
   get exp() {
-    return this._data.exp
+    return this.data.exp
   }
 
   get lv() {
-    return this._data.lv
+    return this.data.lv
   }
 
   get name() {
-    return this._data.name
+    return this.data.name
   }
 
   get gongfa(): Readonly<PlayerGongfaData | undefined> {
-    return this._data.gongfa
+    return this.data.gongfa
   }
 
   get currentEvent(): Readonly<PlayerEventData> {
-    return this._data.currentEvent
+    return this.data.currentEvent
   }
 
   set currentEvent(event: PlayerEventData) {
-    this._data.currentEvent = event
+    this.data.currentEvent = event
+  }
+
+  /**
+   * 境界等级
+   */
+  get realmLv(): number {
+    /* 每20lv一个境界 */
+    return Math.floor(this.lv / 20)
   }
 
   resetCurrentEvent() {
-    this._data.currentEvent = {
+    this.data.currentEvent = {
       type: 'none',
       data: {},
     }
   }
 
   addExp(val: number) {
-    this._data.exp += val
+    this.data.exp += val
   }
 
   /**
@@ -61,7 +69,7 @@ export class PlayerCore extends Component {
 
   updataGongfa(duration: number, data: GongfaPerData) {
     if (!this.gongfa) return
-    this._data.gongfa = {
+    this.data.gongfa = {
       ...this.gongfa,
       duration: duration,
       data: data,
@@ -73,7 +81,7 @@ export class PlayerCore extends Component {
    * @param key
    */
   learnGongfa(key: string) {
-    this._data.gongfa = {
+    this.data.gongfa = {
       key,
       duration: 0,
       data: {},

@@ -50,6 +50,9 @@ export type PlayerCoreData = {
   exp: number
   gongfa?: PlayerGongfaData
   currentEvent: PlayerEventData
+  growAttr: PlayerGrowAttr
+  lingRoot: LingRoot
+  state: StateProps
 }
 
 /**
@@ -77,8 +80,6 @@ export type MetaAttr = {
   spd: number
   /* 命中 */
   hit: number
-  /* 闪避 */
-  dodge: number
 }
 
 export type PlayerGrowAttr = {
@@ -112,16 +113,27 @@ export type PlayerGrowAttr = {
  * 灵根上限100点，这100点会随机分布在各个属性上。
  * 某个属性较突出，则代表为外在表象。
  * 灵根对角色的属性有着各项增幅
+ * 复合增益：火木：炼丹；火金：炼器；木土：种植；
  */
 export type LingRoot = {
-  /* 金：伤害 */
+  /* 金：爆发伤害 */
   metal: number
-  /* 木：防御 */
+  /* 木：少防御，高恢复 */
   wood: number
-  /* 水：气血 */
+  /* 水：中气血，中恢复 */
   water: number
-  /*  */
+  /* 火：持续伤害 */
   fire: number
   /* 土：防御 */
   soil: number
+}
+
+/**
+ * 角色状态属性
+ */
+export type StateProps = {
+  hp: number
+  mp: number
+  shenshi: number
+  energy: number
 }
