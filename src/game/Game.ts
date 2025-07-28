@@ -6,6 +6,7 @@ import { ViewDataRefreshSystem } from './player/ViewDataRefreshSystem'
 import { PlayerBagSystem } from './player/PlayerBagSystem'
 import { DebugPlugin } from './plugins/DebugPlugin'
 import { PlayerEffectHandlerSystem } from './player/PlayerEffectHandlerSystem'
+import { PlayerMetaAttrComp } from './player/PlayerMetaAttrComp'
 
 let world: World
 
@@ -26,27 +27,28 @@ export function startGame() {
       type: 'none',
       data: {},
     },
-    lingRoot:{
+    lingRoot: {
       metal: 0,
       wood: 0,
       water: 0,
       fire: 0,
-      soil: 0
+      soil: 0,
     },
-    state:{
-      hp:0,
-      mp:0,
-      energy:0,
-      shenshi:0,
+    state: {
+      hp: 0,
+      mp: 0,
+      energy: 0,
+      shenshi: 0,
     },
-    growAttr:{
+    growAttr: {
       lingPower: 0,
       shenShi: 0,
       tiPo: 0,
-      xinJing: 0
-    }
+      xinJing: 0,
+    },
   })
   playerEntity.addComponent(StuffBox, { items: [] })
+  playerEntity.addComponent(PlayerMetaAttrComp)
 
   world.addSystem(GongfaSystem)
   world.addSystem(PlayerBagSystem)

@@ -1,4 +1,10 @@
-import type { PlayerEventData, PlayerGongfaData, StuffBoxData } from '@/game/base/Types'
+import type {
+  MetaAttr,
+  PlayerEventData,
+  PlayerGongfaData,
+  StateProps,
+  StuffBoxData,
+} from '@/game/base/Types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -12,5 +18,8 @@ export const useGameStore = defineStore('game', () => {
   })
   const gongfa = ref<PlayerGongfaData>()
   const currentEvent = ref<PlayerEventData>()
-  return { name, exp, expMax, lv, bag, gongfa, currentEvent }
+  const state = ref<Partial<StateProps>>()
+  const metaAttr = ref<Partial<MetaAttr>>()
+
+  return { name, exp, expMax, lv, bag, gongfa, currentEvent, state, metaAttr }
 })
