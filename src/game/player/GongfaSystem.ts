@@ -1,8 +1,8 @@
-import { Entity, EventDispatchMode, System } from '@/framework'
+import { Entity, System } from '@/framework'
 import { gongfaResourcesLoader, gongfaTriggerResourcesLoader } from '../base/ResCenter'
 import { PlayerFinishXiulian, PlayerStartXiulian } from '../events/PlayerEvents'
 import { queryPlayer } from '../query/Query'
-import { PlayerCore } from './PlayerComp'
+import { PlayerCore, PlayerEffectCache } from './PlayerComp'
 
 /**
  * 角色功法系统
@@ -63,6 +63,8 @@ export class GongfaSystem extends System {
   update(entities: Entity[]): void {
     entities.forEach((e) => {
       const core = e.getComponent(PlayerCore)!
+      const effectCache = e.getComponent(PlayerEffectCache)!
+
       if (core.currentEvent.type !== 'xiu_lian') return
 
       const gfData = core.gongfa!
@@ -82,7 +84,7 @@ export class GongfaSystem extends System {
 
       // 派发功法效果
       effects.forEach((effect) => {
-        this.eventDispatch(effect, EventDispatchMode.EndOfFrame)
+        effectCache.addEffect(effect)
       })
     })
   }

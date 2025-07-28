@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FunResourcesLoader, ObjectResourcesLoader } from '@/framework/Resources'
-import type { BaseStuffResources, GongfaPerData, GongfaResources } from './Types'
+import type {
+  BaseStuffResources,
+  BuffData,
+  BuffResources,
+  GongfaPerData,
+  GongfaResources,
+} from './Types'
 import { EffectAddExp, type Effect } from '../player/Effect'
 
 const EXECUTE_CYCLE = 'EXECUTE_CYCLE'
@@ -54,7 +60,7 @@ export const gongfaTriggerResourcesLoader = new FunResourcesLoader<
     return {
       data,
       duration: duration + 1,
-      effects: [new EffectAddExp(uid, basicExp)],
+      effects: [new EffectAddExp(basicExp)],
     }
   },
 })
@@ -62,3 +68,44 @@ export const gongfaTriggerResourcesLoader = new FunResourcesLoader<
 export const stuffResourcesLoader = new ObjectResourcesLoader<BaseStuffResources>()
   .merge(gongfaResourcesLoader)
   .toExport()
+
+export const buffResourcesLoader = new ObjectResourcesLoader<BuffResources>().registerBatch({
+  ju_qi: {
+    name: '聚气',
+    args: {
+      count: 5,
+    },
+    desc() {
+      return `每个周天的获得修为增加100%，剩余${this.args['count']}次`
+    },
+    isValid() {
+      return this.args['count'] > 0
+    },
+  },
+})
+
+/**
+ * buff效果触发
+ */
+export const buffTriggerResourcesLoader = new FunResourcesLoader<
+  [args: Record<string, any>, data: BuffData, effect: Effect],
+  {
+    data: BuffData
+    effects: Effect[]
+  }
+>().registerBatch({
+  ju_qi: (args, data, effect) => {
+    const count = data['count'] as number
+    if (count <= 0) return { data, effects: [effect] }
+    // 扣减一次次数
+    data['count'] = count - 1
+    if (effect instanceof EffectAddExp) {
+      // 修为翻倍
+      effect.exp *= 2
+    }
+    return {
+      data,
+      effects: [effect],
+    }
+  },
+})

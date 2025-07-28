@@ -5,6 +5,7 @@ import type {
   PlayerEventData,
   PlayerGongfaData,
 } from '../base/Types'
+import type { Effect } from './Effect'
 
 /**
  * 角色核心组件
@@ -106,3 +107,17 @@ export class PlayerCore extends Component {
  * 玩家控制的角色
  */
 export class P1 extends Component {}
+
+/**
+ * 角色效果缓存
+ */
+export class PlayerEffectCache extends Component {
+  constructor(public effects: Effect[]) {
+    super()
+  }
+
+  addEffect(effect: Effect) {
+    this.effects.push(effect)
+  }
+
+}

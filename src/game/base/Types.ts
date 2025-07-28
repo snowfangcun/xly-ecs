@@ -22,6 +22,24 @@ export type GongfaResources = BaseStuffResources & {
   effectStr: () => string
 }
 
+export type BuffResources = {
+  name: string
+  /**
+   * buff的参数配置
+   */
+  args: Record<string, any>
+  desc: () => string
+  isValid: () => boolean
+  /**
+   * buff持久化的初始数据
+   */
+  initData: () => Record<string, any>
+  /**
+   * 效果触发器函数资源的key
+   */
+  triggerFnKey: string
+}
+
 /**
  * 角色功法数据
  */
@@ -44,6 +62,8 @@ export type PlayerEventData = {
   data: Record<string, any>
 }
 
+export type BuffData = Record<string, any>
+
 export type PlayerCoreData = {
   name: string
   lv: number
@@ -53,6 +73,7 @@ export type PlayerCoreData = {
   growAttr: PlayerGrowAttr
   lingRoot: LingRoot
   state: StateProps
+  buffs: BuffData[]
 }
 
 /**

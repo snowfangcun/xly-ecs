@@ -1,5 +1,5 @@
 import { World } from '@/framework'
-import { P1, PlayerCore } from './player/PlayerComp'
+import { P1, PlayerCore, PlayerEffectCache } from './player/PlayerComp'
 import { GongfaSystem } from './player/GongfaSystem'
 import { StuffBox } from './stuff/StuffComp'
 import { ViewDataRefreshSystem } from './player/ViewDataRefreshSystem'
@@ -46,9 +46,11 @@ export function startGame() {
       tiPo: 0,
       xinJing: 0,
     },
+    buffs: [],
   })
   playerEntity.addComponent(StuffBox, { items: [] })
   playerEntity.addComponent(PlayerMetaAttrComp)
+  playerEntity.addComponent(PlayerEffectCache, [])
 
   world.addSystem(GongfaSystem)
   world.addSystem(PlayerBagSystem)
