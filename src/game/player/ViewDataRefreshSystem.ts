@@ -18,6 +18,7 @@ export class ViewDataRefreshSystem extends System {
     const bag = entity.getComponent(StuffBox)!
     this.gameStore.name = core.name
     this.gameStore.exp = core.exp
+    this.gameStore.expMax = core.nextLevelExp()
     this.gameStore.lv = core.lv
     this.gameStore.bag = { ...bag.data }
     if (core.gongfa) this.gameStore.gongfa = { ...core.gongfa }

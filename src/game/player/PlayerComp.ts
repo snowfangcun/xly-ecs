@@ -87,6 +87,19 @@ export class PlayerCore extends Component {
       data: {},
     }
   }
+
+  /**
+   * 计算升级到下一级所需的经验值
+   * @param baseExp 基础经验值，默认为100
+   * @param growthCurve 增长曲线，默认为1.5
+   * @returns 升级到下一级所需的经验值
+   */
+  nextLevelExp(baseExp: number = 100, growthCurve: number = 1.5): number {
+    let exp1 = baseExp * Math.pow(this.lv, growthCurve)
+    // 添加线性调整因子避免低等级跳跃过大
+    exp1 += baseExp * this.lv * 0.5
+    return Math.round(exp1)
+  }
 }
 
 /**

@@ -9,7 +9,7 @@ const game = useGameStore()
     <div>
       <span>姓名：{{ game.name }}</span
       >(lv{{ game.lv }})<br />
-      <span>修为：{{ game.exp }}</span>
+      <span>修为：{{ game.exp }}/{{ game.expMax }}</span>
     </div>
     <div>
       <ClickText text="储物" v-on:click="() => router.push({ name: 'bag' })" />|
