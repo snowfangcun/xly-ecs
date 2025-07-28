@@ -7,6 +7,7 @@ import { PlayerBagSystem } from './player/PlayerBagSystem'
 import { DebugPlugin } from './plugins/DebugPlugin'
 import { PlayerEffectHandlerSystem } from './player/PlayerEffectHandlerSystem'
 import { PlayerMetaAttrComp } from './player/PlayerMetaAttrComp'
+import { PlayerBuffHandlerSystem } from './player/PlayerBuffHandlerSystem'
 
 let world: World
 
@@ -52,10 +53,12 @@ export function startGame() {
   playerEntity.addComponent(PlayerMetaAttrComp)
   playerEntity.addComponent(PlayerEffectCache, [])
 
-  world.addSystem(GongfaSystem)
+  world.addSystem(GongfaSystem, 20)
+  //buff处理的优先级要比effect处理高
+  world.addSystem(PlayerBuffHandlerSystem, 11)
   world.addSystem(PlayerBagSystem)
-  world.addSystem(ViewDataRefreshSystem)
   world.addSystem(PlayerEffectHandlerSystem, 10)
+  world.addSystem(ViewDataRefreshSystem)
 
   setInterval(() => {
     world.update(1)

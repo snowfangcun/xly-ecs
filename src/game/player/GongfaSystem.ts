@@ -70,7 +70,7 @@ export class GongfaSystem extends System {
       const gfData = core.gongfa!
 
       const res = gongfaResourcesLoader.get(gfData.key)
-      const gongfaTrigger = gongfaTriggerResourcesLoader.get(gfData.key)
+      const gongfaTrigger = gongfaTriggerResourcesLoader.get(res.triggerFnKey)
 
       const { data, effects, duration } = gongfaTrigger(
         core.uid,

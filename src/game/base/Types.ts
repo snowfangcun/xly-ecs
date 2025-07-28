@@ -20,6 +20,7 @@ export type GongfaResources = BaseStuffResources & {
   isStackable: false
   args: Record<string, any>
   effectStr: () => string
+  triggerFnKey: string
 }
 
 export type BuffResources = {

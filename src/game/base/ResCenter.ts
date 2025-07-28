@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FunResourcesLoader, ObjectResourcesLoader } from '@/framework/Resources'
+import { EffectAddExp, type Effect } from '../player/Effect'
 import type {
   BaseStuffResources,
   BuffData,
@@ -7,7 +8,6 @@ import type {
   GongfaPerData,
   GongfaResources,
 } from './Types'
-import { EffectAddExp, type Effect } from '../player/Effect'
 
 const EXECUTE_CYCLE = 'EXECUTE_CYCLE'
 const BASIC_EXP = 'BASIC_EXP'
@@ -18,6 +18,7 @@ const BASIC_EXP = 'BASIC_EXP'
 export const gongfaResourcesLoader = new ObjectResourcesLoader<GongfaResources>().registerBatch({
   chang_qing_gong: {
     name: '长青功',
+    triggerFnKey: 'chang_qing_gong',
     type: 'gongfa',
     desc: '长青功',
     isStackable: false,
@@ -72,9 +73,11 @@ export const stuffResourcesLoader = new ObjectResourcesLoader<BaseStuffResources
 export const buffResourcesLoader = new ObjectResourcesLoader<BuffResources>().registerBatch({
   ju_qi: {
     name: '聚气',
-    args: {
+    triggerFnKey: 'ju_qi',
+    args: {},
+    initData: () => ({
       count: 5,
-    },
+    }),
     desc() {
       return `每个周天的获得修为增加100%，剩余${this.args['count']}次`
     },
