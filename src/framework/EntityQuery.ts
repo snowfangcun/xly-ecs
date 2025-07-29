@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Entity, EntityId } from './Entity'
 import {
   ComponentAddedEvent,
@@ -34,6 +35,7 @@ export class QueryCriteriaBuilder {
   private _any: ComponentType[] = []
   private _none: ComponentType[] = []
   private _key: string = ''
+  private _mapCondition?: (entity: Entity) => boolean
 
   constructor() {
     this.updateKey()
@@ -57,6 +59,18 @@ export class QueryCriteriaBuilder {
     return this
   }
 
+  /**
+   * 对实体查新结果根据条件进行筛选
+   * @param condition
+   * @returns
+   */
+  by<T extends any[]>(condition: (entity: Entity, ...args: T) => boolean): (arg: T) => this {
+    return (args: T) => {
+      this._mapCondition = (entity: Entity) => condition(entity, ...args)
+      return this
+    }
+  }
+
   fromQueryCriteria(criteria: QueryCriteria): this {
     this._all = criteria.all || []
     this._any = criteria.any || []
@@ -75,6 +89,10 @@ export class QueryCriteriaBuilder {
 
   get noneComponents(): ComponentType[] {
     return this._none
+  }
+
+  get mapCondition(): ((entity: Entity) => boolean) | undefined {
+    return this._mapCondition
   }
 
   get key(): string {
@@ -260,10 +278,12 @@ export class EntityQuery {
   query(criteria: QueryCriteriaBuilder | QueryCriteria): Entity[] {
     let cacheKey: string
     let queryCriteria: QueryCriteria
+    let mapCondition: ((entity: Entity) => boolean) | undefined
 
     if (criteria instanceof QueryCriteriaBuilder) {
       cacheKey = criteria.key
       queryCriteria = criteria.toCriteria()
+      mapCondition = criteria.mapCondition
     } else {
       cacheKey = JSON.stringify(criteria)
       queryCriteria = criteria
@@ -271,7 +291,14 @@ export class EntityQuery {
 
     if (this.queryCache.has(cacheKey)) {
       const cachedIds = this.queryCache.get(cacheKey)!
-      return cachedIds.map((id) => this.entities.get(id)!).filter(Boolean)
+      let result = cachedIds.map((id) => this.entities.get(id)!).filter(Boolean)
+
+      // 应用mapCondition进行二次筛选
+      if (mapCondition) {
+        result = result.filter(mapCondition)
+      }
+
+      return result
     }
 
     if (
@@ -279,7 +306,14 @@ export class EntityQuery {
       (!queryCriteria.any || queryCriteria.any.length === 0) &&
       (!queryCriteria.none || queryCriteria.none.length === 0)
     ) {
-      return Array.from(this.entities.values())
+      let result = Array.from(this.entities.values())
+
+      // 应用mapCondition进行二次筛选
+      if (mapCondition) {
+        result = result.filter(mapCondition)
+      }
+
+      return result
     }
 
     let candidates: Set<string> | null = null
@@ -341,7 +375,17 @@ export class EntityQuery {
       }
     }
 
-    const resultIds = Array.from(candidates)
+    let resultIds = Array.from(candidates)
+
+    // 应用mapCondition进行二次筛选
+    if (mapCondition) {
+      const filteredResult = resultIds
+        .map((id) => this.entities.get(id)!)
+        .filter(Boolean)
+        .filter(mapCondition)
+      resultIds = filteredResult.map((entity) => entity.id)
+    }
+
     this.queryCache.set(cacheKey, resultIds)
 
     return resultIds.map((id) => this.entities.get(id)!).filter(Boolean)

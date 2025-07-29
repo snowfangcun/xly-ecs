@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ClickText from '@/components/ClickText.vue'
 import { gongfaResourcesLoader } from '@/game/base/ResCenter'
-import { PlayerFinishXiulian, PlayerStartXiulian } from '@/game/events/PlayerEvents'
+import { PlayerFinishXiulianEvent, PlayerStartXiulianEvent } from '@/game/events/PlayerEvents'
 import { getWorld } from '@/game/Game'
 import { useGameStore } from '@/stores/game'
 import { computed } from 'vue'
@@ -19,11 +19,11 @@ const data = computed(() => {
 })
 
 function start() {
-  world.emitEvent(new PlayerStartXiulian())
+  world.emitEvent(new PlayerStartXiulianEvent())
 }
 
 function finish() {
-  world.emitEvent(new PlayerFinishXiulian())
+  world.emitEvent(new PlayerFinishXiulianEvent())
 }
 </script>
 <template>

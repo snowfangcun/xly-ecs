@@ -48,7 +48,7 @@ export class PlayerBagUseItemEvent extends Event {
 /**
  * 角色开始修练事件
  */
-export class PlayerStartXiulian extends Event {
+export class PlayerStartXiulianEvent extends Event {
   constructor(public readonly uid: string = 'p1') {
     super()
   }
@@ -57,8 +57,20 @@ export class PlayerStartXiulian extends Event {
 /**
  * 角色结束修练事件
  */
-export class PlayerFinishXiulian extends Event {
+export class PlayerFinishXiulianEvent extends Event {
   constructor(public readonly uid: string = 'p1') {
+    super()
+  }
+}
+
+/**
+ * 角色添加buff事件
+ */
+export class PlayerAddBuffEvent extends Event {
+  constructor(
+    public readonly uid: string = 'p1',
+    public readonly buffKey: string,
+  ) {
     super()
   }
 }

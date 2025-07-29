@@ -1,6 +1,6 @@
 import { Entity, System } from '@/framework'
 import { gongfaResourcesLoader, gongfaTriggerResourcesLoader } from '../base/ResCenter'
-import { PlayerFinishXiulian, PlayerStartXiulian } from '../events/PlayerEvents'
+import { PlayerFinishXiulianEvent, PlayerStartXiulianEvent } from '../events/PlayerEvents'
 import { queryPlayer } from '../query/Query'
 import { PlayerCore, PlayerEffectCache } from './PlayerComp'
 
@@ -13,15 +13,15 @@ export class GongfaSystem extends System {
   }
 
   onAddedToWorld(): void {
-    this.eventSubscribe(PlayerStartXiulian, this.onPlayerStartXiulian.bind(this))
-    this.eventSubscribe(PlayerFinishXiulian, this.onPlayerFinishXiulian.bind(this))
+    this.eventSubscribe(PlayerStartXiulianEvent, this.onPlayerStartXiulian.bind(this))
+    this.eventSubscribe(PlayerFinishXiulianEvent, this.onPlayerFinishXiulian.bind(this))
   }
 
   /**
    * 开始修炼事件
    * @param event
    */
-  private onPlayerStartXiulian(event: PlayerStartXiulian): void {
+  private onPlayerStartXiulian(event: PlayerStartXiulianEvent): void {
     const player = this.world!.query(queryPlayer).find(
       (e) => e.getComponent(PlayerCore)!.uid === event.uid,
     )
@@ -46,7 +46,7 @@ export class GongfaSystem extends System {
    * 结束修炼事件
    * @param event
    */
-  private onPlayerFinishXiulian(event: PlayerFinishXiulian): void {
+  private onPlayerFinishXiulian(event: PlayerFinishXiulianEvent): void {
     const player = this.world!.query(queryPlayer).find(
       (e) => e.getComponent(PlayerCore)!.uid === event.uid,
     )

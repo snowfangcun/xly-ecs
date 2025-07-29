@@ -2,6 +2,7 @@ import { Entity, System } from '@/framework'
 import { PlayerCore, PlayerEffectCache } from './PlayerComp'
 import { buffResourcesLoader, buffTriggerResourcesLoader } from '../base/ResCenter'
 import type { Effect } from './Effect'
+import { PlayerAddBuffEvent } from '../events/PlayerEvents'
 
 /**
  * 玩家buff处理系统
@@ -11,6 +12,23 @@ export class PlayerBuffHandlerSystem extends System {
     super({
       all: [PlayerCore],
     })
+  }
+
+  onAddedToWorld(): void {
+    this.eventSubscribe(PlayerAddBuffEvent, this.onPlayerAddBuff.bind(this))
+  }
+
+  private onPlayerAddBuff(event: PlayerAddBuffEvent) {
+    const { uid, buffKey } = event
+
+    // const playerCore = this.getComponent(PlayerCore, entity)
+    // const buffResources = buffResourcesLoader.get(buffKey)
+    // if (!buffResources) {
+    //   console.error(`buff资源不存在：${buffKey}`)
+    //   return
+    // }
+    // if (!buffResources.isValid(playerCore.data)) {
+    // }
   }
 
   update(entities: Entity[]): void {
@@ -32,6 +50,14 @@ export class PlayerBuffHandlerSystem extends System {
           effect2 = [...effect2, ...effects]
         })
       })
+
+      // 清理失效buff
+      core.data.buffs = new Map(
+        [...core.data.buffs].filter(([k, v]) => {
+          const buffRes = buffResourcesLoader.get(k)
+          return buffRes.isValid(v)
+        }),
+      )
     })
   }
 }
