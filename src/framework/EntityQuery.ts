@@ -28,6 +28,34 @@ export type QueryCriteria = {
 }
 
 /**
+ * 只读查询条件接口，用于防止外部修改查询条件
+ */
+export interface QueryCriteriaReadonly {
+  /**
+   * 必须存在的组件
+   */
+  readonly all?: ComponentType[]
+  /**
+   * 任意之一的组件
+   */
+  readonly any?: ComponentType[]
+  /**
+   * 不存在的组件
+   */
+  readonly none?: ComponentType[]
+
+  /**
+   * 获取mapCondition
+   */
+  readonly mapCondition?: (entity: Entity) => boolean
+
+  /**
+   * 获取查询条件的key
+   */
+  readonly key: string
+}
+
+/**
  * 查询条件构建器
  */
 export class QueryCriteriaBuilder {
@@ -64,10 +92,12 @@ export class QueryCriteriaBuilder {
    * @param condition
    * @returns
    */
-  by<T extends any[]>(condition: (entity: Entity, ...args: T) => boolean): (arg: T) => this {
-    return (args: T) => {
+  by<T extends any[]>(
+    condition: (entity: Entity, ...args: T) => boolean,
+  ): (...arg: T) => QueryCriteriaReadonly {
+    return (...args: T) => {
       this._mapCondition = (entity: Entity) => condition(entity, ...args)
-      return this
+      return this.build()
     }
   }
 
@@ -77,6 +107,19 @@ export class QueryCriteriaBuilder {
     this._none = criteria.none || []
     this.updateKey()
     return this
+  }
+
+  /**
+   * 构建只读查询条件，防止外部修改
+   */
+  build(): QueryCriteriaReadonly {
+    return {
+      all: this._all.length > 0 ? [...this._all] : undefined,
+      any: this._any.length > 0 ? [...this._any] : undefined,
+      none: this._none.length > 0 ? [...this._none] : undefined,
+      mapCondition: this._mapCondition,
+      key: this._key,
+    }
   }
 
   get allComponents(): ComponentType[] {
@@ -275,7 +318,7 @@ export class EntityQuery {
     this.tagQueryCache.clear()
   }
 
-  query(criteria: QueryCriteriaBuilder | QueryCriteria): Entity[] {
+  query(criteria: QueryCriteriaBuilder | QueryCriteria | QueryCriteriaReadonly): Entity[] {
     let cacheKey: string
     let queryCriteria: QueryCriteria
     let mapCondition: ((entity: Entity) => boolean) | undefined
@@ -285,8 +328,16 @@ export class EntityQuery {
       queryCriteria = criteria.toCriteria()
       mapCondition = criteria.mapCondition
     } else {
-      cacheKey = JSON.stringify(criteria)
-      queryCriteria = criteria
+      // 对于QueryCriteriaReadonly或QueryCriteria
+      cacheKey =
+        'key' in criteria ? (criteria as QueryCriteriaReadonly).key : JSON.stringify(criteria)
+      queryCriteria = {
+        all: criteria.all,
+        any: criteria.any,
+        none: criteria.none,
+      }
+      mapCondition =
+        'mapCondition' in criteria ? (criteria as QueryCriteriaReadonly).mapCondition : undefined
     }
 
     if (this.queryCache.has(cacheKey)) {

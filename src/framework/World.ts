@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Entity } from './Entity'
-import { EntityQuery, QueryCriteriaBuilder, type QueryCriteria } from './EntityQuery'
+import {
+  EntityQuery,
+  QueryCriteriaBuilder,
+  type QueryCriteria,
+  type QueryCriteriaReadonly,
+} from './EntityQuery'
 import {
   EntityCreatedEvent,
   EntityRemovedEvent,
@@ -148,7 +153,7 @@ export class World {
     system.postUpdate?.(deltaTime)
   }
 
-  query(criteria: QueryCriteriaBuilder | QueryCriteria): Entity[] {
+  query(criteria: QueryCriteriaBuilder | QueryCriteria | QueryCriteriaReadonly): Entity[] {
     return this.entityQuery.query(criteria)
   }
 

@@ -1,7 +1,7 @@
 import { Entity, System } from '@/framework'
 import { gongfaResourcesLoader, gongfaTriggerResourcesLoader } from '../base/ResCenter'
 import { PlayerFinishXiulianEvent, PlayerStartXiulianEvent } from '../events/PlayerEvents'
-import { queryPlayer } from '../query/Query'
+import { queryPlayerByUid } from '../query/Query'
 import { PlayerCore, PlayerEffectCache } from './PlayerComp'
 
 /**
@@ -22,9 +22,7 @@ export class GongfaSystem extends System {
    * @param event
    */
   private onPlayerStartXiulian(event: PlayerStartXiulianEvent): void {
-    const player = this.world!.query(queryPlayer).find(
-      (e) => e.getComponent(PlayerCore)!.uid === event.uid,
-    )
+    const [player] = this.world!.query(queryPlayerByUid(event.uid))
 
     if (!player) throw new Error(`角色${event.uid}不存在`)
 
@@ -47,9 +45,7 @@ export class GongfaSystem extends System {
    * @param event
    */
   private onPlayerFinishXiulian(event: PlayerFinishXiulianEvent): void {
-    const player = this.world!.query(queryPlayer).find(
-      (e) => e.getComponent(PlayerCore)!.uid === event.uid,
-    )
+    const [player] = this.world!.query(queryPlayerByUid(event.uid))
 
     if (!player) throw new Error(`角色${event.uid}不存在`)
 
