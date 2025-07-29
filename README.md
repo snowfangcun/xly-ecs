@@ -1,39 +1,24 @@
-# xly-single
+# 仙路遥
 
-This template should help get you started developing with Vue 3 in Vite.
+纯文字修仙放置游戏
 
-## Recommended IDE Setup
+## 技术栈
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+vue3 + pinia + 自主开发维护ecs框架
 
-## Type Support for `.vue` Imports in TS
+## 开发计划
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- ecs框架（已完成）
+- 单人模式（开发中）
+- 开放模式-自主决策npc
+- 多平台适配
 
-## Customize configuration
+## 项目特点
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- ecs架构，方便游戏功能拓展
+- 视图，逻辑分离，游戏不受vue框架制约，可以方便的迁移到任何可以运行js的地方
 
-## Project Setup
+## License
 
-```sh
-bun install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-bun dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-bun run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-bun lint
-```
+The MIT License (MIT)
+Copyright (c) 2025, FangCun
