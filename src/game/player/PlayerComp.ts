@@ -59,6 +59,7 @@ export class PlayerCore extends Component {
   }
 
   addExp(val: number) {
+    console.log(`${this.name} 获得 ${val} 经验`)
     this.data.exp += val
   }
 

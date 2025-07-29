@@ -25,6 +25,8 @@ export class PlayerEffectHandlerSystem extends System {
       effectCache.effects.forEach((effect) => {
         if (effect instanceof EffectAddExp) this.onEffectAddExp(core, effect)
       })
+      // 清空缓存
+      effectCache.effects = []
     })
   }
 }
