@@ -17,24 +17,30 @@ const BASIC_EXP = 'BASIC_EXP'
 /**
  * 功法资源
  */
-export const GONGFA_RES = new ObjectResourcesLoader<GongfaResources>().registerBatch({
-  chang_qing_gong: {
-    name: '长青功',
-    desc: '长青功',
-    level: 1,
-    triggerFnKey: 'chang_qing_gong',
+export const GONGFA_RES = new ObjectResourcesLoader<GongfaResources>().registerBatchOmit<
+  'type' | 'isStackable'
+>(
+  {
     type: 'gongfa',
     isStackable: false,
-    useOptions: ['learn'],
-    args: {
-      EXECUTE_CYCLE: 2,
-      BASIC_EXP: 1,
-    },
-    effectStr() {
-      return `运功时，每${this.args[EXECUTE_CYCLE]}秒，增加${this.args[BASIC_EXP]}点修为`
+  },
+  {
+    chang_qing_gong: {
+      name: '长青功',
+      desc: '长青功',
+      level: 1,
+      triggerFnKey: 'chang_qing_gong',
+      useOptions: ['learn'],
+      args: {
+        EXECUTE_CYCLE: 2,
+        BASIC_EXP: 1,
+      },
+      effectStr() {
+        return `运功时，每${this.args[EXECUTE_CYCLE]}秒，增加${this.args[BASIC_EXP]}点修为`
+      },
     },
   },
-})
+)
 
 /**
  * 功法效果触发器资源
@@ -118,26 +124,30 @@ export const BUFF_TRIGGER_RES = new FunResourcesLoader<
 /**
  * 灵药资源
  */
-export const LING_PLANT_RES = new ObjectResourcesLoader<LingPlantResources>().registerBatch({
-  chi_long_cao: {
-    name: '赤龙草',
-    desc: '赤龙草',
+export const LING_PLANT_RES = new ObjectResourcesLoader<LingPlantResources>().registerBatchOmit<
+  'type' | 'isStackable'
+>(
+  {
     type: 'ling_plant',
-    lingAttr: 'fire',
-    level: 1,
     isStackable: true,
-    useOptions: [],
   },
-  xiao_lu_cao: {
-    name: '小露草',
-    desc: '小露草',
-    type: 'ling_plant',
-    lingAttr: 'water',
-    level: 1,
-    isStackable: true,
-    useOptions: [],
+  {
+    chi_long_cao: {
+      name: '赤龙草',
+      desc: '赤龙草',
+      lingAttr: 'fire',
+      level: 1,
+      useOptions: [],
+    },
+    xiao_lu_cao: {
+      name: '小露草',
+      desc: '小露草',
+      lingAttr: 'water',
+      level: 1,
+      useOptions: [],
+    },
   },
-})
+)
 
 export const STUFF_RES = new ObjectResourcesLoader<BaseStuffResources>()
   .merge(GONGFA_RES, LING_PLANT_RES)

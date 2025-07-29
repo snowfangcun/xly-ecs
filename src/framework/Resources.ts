@@ -107,6 +107,23 @@ export class ObjectResourcesLoader<T extends object> extends BaseResourcesLoader
     }
     return this
   }
+
+  /**
+   * 可忽略重复字段的批量注册
+   * @param defaults
+   * @param resources
+   * @returns
+   */
+  registerBatchOmit<TOmit extends keyof T>(
+    defaults: Pick<T, TOmit>,
+    resources: Record<string, Omit<T, TOmit> & Partial<Pick<T, TOmit>>>,
+  ): this {
+    const mergedResources: Record<string, T> = {}
+    for (const key in resources) {
+      mergedResources[key] = { ...defaults, ...resources[key] } as T
+    }
+    return super.registerBatch(mergedResources)
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
