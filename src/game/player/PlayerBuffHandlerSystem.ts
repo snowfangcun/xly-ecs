@@ -44,23 +44,17 @@ export class PlayerBuffHandlerSystem extends System {
       // 遍历effct
       effectCache.effects.forEach((effect) => {
         // 遍历buff
-        core.data.buffs.forEach((v, k) => {
+        for (const [k, v] of core.data.buffs.entries()) {
           const buffRes = buffResourcesLoader.get(k)
           if (!buffRes.isValid(v)) return
           const buffTrigger = buffTriggerResourcesLoader.get(buffRes.triggerFnKey)
           const { data, effects } = buffTrigger(buffRes.args, v, effect)
           core.data.buffs.set(k, data)
           effect2 = [...effect2, ...effects]
-        })
+          // 再次验证buff，失效则删除
+          if (!buffRes.isValid(data)) core.removeBuff(k)
+        }
       })
-
-      // 清理失效buff
-      core.data.buffs = new Map(
-        [...core.data.buffs].filter(([k, v]) => {
-          const buffRes = buffResourcesLoader.get(k)
-          return buffRes.isValid(v)
-        }),
-      )
     })
   }
 }
