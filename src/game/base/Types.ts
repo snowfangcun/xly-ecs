@@ -63,6 +63,12 @@ export type LingPlantResources = BaseStuffResources & {
 export type WorldPlaceResources = {
   name: string
   desc: string
+  /* 当地产物可探索获得 */
+  items: {
+    key: string
+    /* 稀有度 */
+    rarity: number
+  }[]
 }
 
 /**

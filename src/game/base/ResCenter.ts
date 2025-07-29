@@ -8,6 +8,7 @@ import type {
   GongfaPerData,
   GongfaResources,
   LingPlantResources,
+  WorldPlaceResources,
 } from './Types'
 
 const EXECUTE_CYCLE = 'EXECUTE_CYCLE'
@@ -127,8 +128,30 @@ export const LING_PLANT_RES = new ObjectResourcesLoader<LingPlantResources>().re
     isStackable: true,
     useOptions: [],
   },
+  xiao_lu_cao: {
+    name: '小露草',
+    desc: '小露草',
+    type: 'ling_plant',
+    lingAttr: 'water',
+    level: 1,
+    isStackable: true,
+    useOptions: [],
+  },
 })
 
 export const STUFF_RES = new ObjectResourcesLoader<BaseStuffResources>()
   .merge(GONGFA_RES, LING_PLANT_RES)
   .toExport()
+
+export const WORLD_PLACE_RES = new ObjectResourcesLoader<WorldPlaceResources>().registerBatch({
+  fu_long_jian: {
+    name: '伏龙涧',
+    desc: '伏龙涧',
+    items: [
+      {
+        key: 'chi_long_cao',
+        rarity: 1,
+      },
+    ],
+  },
+})
