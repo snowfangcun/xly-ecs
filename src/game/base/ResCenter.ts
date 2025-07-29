@@ -81,9 +81,7 @@ export const buffResourcesLoader = new ObjectResourcesLoader<BuffResources>().re
     desc() {
       return `每个周天的获得修为增加100%，剩余${this.args['count']}次`
     },
-    isValid() {
-      return this.args['count'] > 0
-    },
+    isValid: (data) => data['count'] > 0,
   },
 })
 
@@ -99,7 +97,7 @@ export const buffTriggerResourcesLoader = new FunResourcesLoader<
 >().registerBatch({
   ju_qi: (args, data, effect) => {
     const count = data['count'] as number
-    if (count <= 0) return { data, effects: [effect] }
+
     // 扣减一次次数
     data['count'] = count - 1
     if (effect instanceof EffectAddExp) {

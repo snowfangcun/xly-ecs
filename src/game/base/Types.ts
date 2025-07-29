@@ -30,7 +30,7 @@ export type BuffResources = {
    */
   args: Record<string, any>
   desc: () => string
-  isValid: () => boolean
+  isValid: (data:BuffData) => boolean
   /**
    * buff持久化的初始数据
    */
@@ -74,7 +74,7 @@ export type PlayerCoreData = {
   growAttr: PlayerGrowAttr
   lingRoot: LingRoot
   state: StateProps
-  buffs: BuffData[]
+  buffs: Map<string, BuffData>
 }
 
 /**

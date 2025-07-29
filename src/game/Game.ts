@@ -47,7 +47,7 @@ export function startGame() {
       tiPo: 0,
       xinJing: 0,
     },
-    buffs: [],
+    buffs: new Map(),
   })
   playerEntity.addComponent(StuffBox, { items: [] })
   playerEntity.addComponent(PlayerMetaAttrComp)

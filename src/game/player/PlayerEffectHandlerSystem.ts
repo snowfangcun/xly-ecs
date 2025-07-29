@@ -6,6 +6,10 @@ import { PlayerCore, PlayerEffectCache } from './PlayerComp'
  * 玩家效果处理系统
  */
 export class PlayerEffectHandlerSystem extends System {
+  constructor() {
+    super({ all: [PlayerCore] })
+  }
+
   /**
    * 处理经验增加效果
    * @param event
