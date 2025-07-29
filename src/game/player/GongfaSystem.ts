@@ -1,5 +1,5 @@
 import { Entity, System } from '@/framework'
-import { gongfaResourcesLoader, gongfaTriggerResourcesLoader } from '../base/ResCenter'
+import { GONGFA_RES, GONGFA_TRIGGER_RES } from '../base/ResCenter'
 import { PlayerFinishXiulianEvent, PlayerStartXiulianEvent } from '../events/PlayerEvents'
 import { queryPlayerByUid } from '../query/Query'
 import { PlayerCore, PlayerEffectCache } from './PlayerComp'
@@ -65,8 +65,8 @@ export class GongfaSystem extends System {
 
       const gfData = core.gongfa!
 
-      const res = gongfaResourcesLoader.get(gfData.key)
-      const gongfaTrigger = gongfaTriggerResourcesLoader.get(res.triggerFnKey)
+      const res = GONGFA_RES.get(gfData.key)
+      const gongfaTrigger = GONGFA_TRIGGER_RES.get(res.triggerFnKey)
 
       const { data, effects, duration } = gongfaTrigger(
         core.uid,

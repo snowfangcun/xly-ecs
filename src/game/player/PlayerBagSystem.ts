@@ -1,5 +1,5 @@
 import { Entity, System } from '@/framework'
-import { gongfaResourcesLoader } from '../base/ResCenter'
+import { GONGFA_RES } from '../base/ResCenter'
 import type { StuffItem } from '../base/Types'
 import {
   PlayerBagAddItemEvent,
@@ -63,7 +63,7 @@ export class PlayerBagSystem extends System {
    * @returns
    */
   private learnGongfa(p1: Entity, item: StuffItem) {
-    if (!gongfaResourcesLoader.has(item.key)) {
+    if (!GONGFA_RES.has(item.key)) {
       throw new Error(`功法资源不存在: ${item.key}`)
     }
     const bag = p1.getComponent(StuffBox)!

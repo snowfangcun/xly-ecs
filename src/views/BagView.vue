@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ClickText from '@/components/ClickText.vue'
-import { stuffResourcesLoader } from '@/game/base/ResCenter'
+import { STUFF_RES } from '@/game/base/ResCenter'
 import router from '@/router'
 import { useGameStore } from '@/stores/game'
 import { computed } from 'vue'
@@ -9,7 +9,7 @@ const gameStore = useGameStore()
 
 const items = computed(() => {
   return gameStore.bag.items.map((item) => {
-    const res = stuffResourcesLoader.get(item.key)
+    const res = STUFF_RES.get(item.key)
     return {
       uuid: item.uuid,
       key: item.key,

@@ -7,6 +7,7 @@ import type {
   BuffResources,
   GongfaPerData,
   GongfaResources,
+  LingPlantResources,
 } from './Types'
 
 const EXECUTE_CYCLE = 'EXECUTE_CYCLE'
@@ -15,12 +16,13 @@ const BASIC_EXP = 'BASIC_EXP'
 /**
  * 功法资源
  */
-export const gongfaResourcesLoader = new ObjectResourcesLoader<GongfaResources>().registerBatch({
+export const GONGFA_RES = new ObjectResourcesLoader<GongfaResources>().registerBatch({
   chang_qing_gong: {
     name: '长青功',
+    desc: '长青功',
+    level: 1,
     triggerFnKey: 'chang_qing_gong',
     type: 'gongfa',
-    desc: '长青功',
     isStackable: false,
     useOptions: ['learn'],
     args: {
@@ -36,7 +38,7 @@ export const gongfaResourcesLoader = new ObjectResourcesLoader<GongfaResources>(
 /**
  * 功法效果触发器资源
  */
-export const gongfaTriggerResourcesLoader = new FunResourcesLoader<
+export const GONGFA_TRIGGER_RES = new FunResourcesLoader<
   [uid: string, args: Record<string, any>, duration: number, data: GongfaPerData],
   {
     data: GongfaPerData
@@ -66,11 +68,7 @@ export const gongfaTriggerResourcesLoader = new FunResourcesLoader<
   },
 })
 
-export const stuffResourcesLoader = new ObjectResourcesLoader<BaseStuffResources>()
-  .merge(gongfaResourcesLoader)
-  .toExport()
-
-export const buffResourcesLoader = new ObjectResourcesLoader<BuffResources>().registerBatch({
+export const BUFF_RES = new ObjectResourcesLoader<BuffResources>().registerBatch({
   ju_qi: {
     name: '聚气',
     triggerFnKey: 'ju_qi',
@@ -93,7 +91,7 @@ export const buffResourcesLoader = new ObjectResourcesLoader<BuffResources>().re
 /**
  * buff效果触发
  */
-export const buffTriggerResourcesLoader = new FunResourcesLoader<
+export const BUFF_TRIGGER_RES = new FunResourcesLoader<
   [args: Record<string, any>, data: BuffData, effect: Effect],
   {
     data: BuffData
@@ -115,3 +113,22 @@ export const buffTriggerResourcesLoader = new FunResourcesLoader<
     }
   },
 })
+
+/**
+ * 灵药资源
+ */
+export const LING_PLANT_RES = new ObjectResourcesLoader<LingPlantResources>().registerBatch({
+  chi_long_cao: {
+    name: '赤龙草',
+    desc: '赤龙草',
+    type: 'ling_plant',
+    lingAttr: 'fire',
+    level: 1,
+    isStackable: true,
+    useOptions: [],
+  },
+})
+
+export const STUFF_RES = new ObjectResourcesLoader<BaseStuffResources>()
+  .merge(GONGFA_RES, LING_PLANT_RES)
+  .toExport()

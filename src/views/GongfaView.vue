@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ClickText from '@/components/ClickText.vue'
-import { gongfaResourcesLoader } from '@/game/base/ResCenter'
+import { GONGFA_RES } from '@/game/base/ResCenter'
 import { PlayerFinishXiulianEvent, PlayerStartXiulianEvent } from '@/game/events/PlayerEvents'
 import { getWorld } from '@/game/Game'
 import { useGameStore } from '@/stores/game'
@@ -11,7 +11,7 @@ const gameStore = useGameStore()
 
 const data = computed(() => {
   if (!gameStore.gongfa) return undefined
-  const res = gongfaResourcesLoader.get(gameStore.gongfa.key)
+  const res = GONGFA_RES.get(gameStore.gongfa.key)
   return {
     res: res,
     ...gameStore.gongfa,

@@ -1,6 +1,6 @@
 import { Entity, System } from '@/framework'
 import { PlayerCore, PlayerEffectCache } from './PlayerComp'
-import { buffResourcesLoader, buffTriggerResourcesLoader } from '../base/ResCenter'
+import { BUFF_RES, BUFF_TRIGGER_RES } from '../base/ResCenter'
 import type { Effect } from './Effect'
 import { PlayerAddBuffEvent } from '../events/PlayerEvents'
 import { queryPlayerByUid } from '../query/Query'
@@ -23,7 +23,7 @@ export class PlayerBuffHandlerSystem extends System {
     const { uid, buffKey } = event
     const [player] = this.world!.query(queryPlayerByUid(uid))
     const playerCore = player.getComponent(PlayerCore)!
-    const buffResources = buffResourcesLoader.get(buffKey)
+    const buffResources = BUFF_RES.get(buffKey)
     const initData = buffResources.initData()
     // 如果存在老buff数据，则需要对buff数据进行合并
     const oldData = playerCore.getBuff(buffKey)
@@ -45,9 +45,9 @@ export class PlayerBuffHandlerSystem extends System {
       effectCache.effects.forEach((effect) => {
         // 遍历buff
         for (const [k, v] of core.data.buffs.entries()) {
-          const buffRes = buffResourcesLoader.get(k)
+          const buffRes = BUFF_RES.get(k)
           if (!buffRes.isValid(v)) return
-          const buffTrigger = buffTriggerResourcesLoader.get(buffRes.triggerFnKey)
+          const buffTrigger = BUFF_TRIGGER_RES.get(buffRes.triggerFnKey)
           const { data, effects } = buffTrigger(buffRes.args, v, effect)
           core.data.buffs.set(k, data)
           effect2 = [...effect2, ...effects]

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@/framework'
 import type { StuffBoxData } from '../base/Types'
-import { stuffResourcesLoader } from '../base/ResCenter'
+import { STUFF_RES } from '../base/ResCenter'
 import { times } from 'lodash'
 
 export class StuffBox extends Component {
@@ -20,7 +20,7 @@ export class StuffBox extends Component {
    * @param data
    */
   addItem(key: string, count: number, data?: any) {
-    const res = stuffResourcesLoader.get(key)
+    const res = STUFF_RES.get(key)
     if (!res.isStackable) {
       // 当不可堆叠时候，重复添加count次1个物品
       times(count, () => {

@@ -20,7 +20,9 @@ export class PlayerMetaAttrComp extends Component {
     // 体魄属性对hp的换算：体魄值*乘数
     const lingPowerFactor = core.data.growAttr.lingPower * 8
     const relamFactor = this.getRelamGrowFactor(core.realmLv)
-    return basicHp * (1 + relamFactor) ** core.lv + lingPowerFactor * (1 + relamFactor) ** core.lv
+    return Math.floor(
+      basicHp * (1 + relamFactor) ** core.lv + lingPowerFactor * (1 + relamFactor) ** core.lv,
+    )
   }
 
   getMpMax(core: PlayerCore): number {
@@ -28,21 +30,27 @@ export class PlayerMetaAttrComp extends Component {
     // 体魄属性对mp的换算：体魄值*乘数
     const tiPoFactor = core.data.growAttr.tiPo * 0.5
     const relamFactor = this.getRelamGrowFactor(core.realmLv)
-    return basicMp * (1 + relamFactor) ** core.lv + tiPoFactor * (1 + relamFactor) ** core.lv
+    return Math.floor(
+      basicMp * (1 + relamFactor) ** core.lv + tiPoFactor * (1 + relamFactor) ** core.lv,
+    )
   }
 
   getAtk(core: PlayerCore): number {
     const basicAtk = [20, 100, 200, 500, 1000][core.lv]
     const lingPowerFactor = core.data.growAttr.lingPower * 5
     const relamFactor = this.getRelamGrowFactor(core.realmLv)
-    return basicAtk * (1 + relamFactor) ** core.lv + lingPowerFactor * (1 + relamFactor) ** core.lv
+    return Math.floor(
+      basicAtk * (1 + relamFactor) ** core.lv + lingPowerFactor * (1 + relamFactor) ** core.lv,
+    )
   }
 
   getDef(core: PlayerCore): number {
     const basicDef = [10, 80, 100, 200, 500][core.lv]
     const tiPoFactor = core.data.growAttr.tiPo * 5
     const relamFactor = this.getRelamGrowFactor(core.realmLv)
-    return basicDef * (1 + relamFactor) ** core.lv + tiPoFactor * (1 + relamFactor) ** core.lv
+    return Math.floor(
+      basicDef * (1 + relamFactor) ** core.lv + tiPoFactor * (1 + relamFactor) ** core.lv,
+    )
   }
 
   /**

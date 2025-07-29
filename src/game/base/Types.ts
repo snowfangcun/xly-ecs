@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type StuffType = 'gongfa' | 'other'
+export type StuffType = 'gongfa' | 'ling_plant' | 'other'
 
 export type BaseStuffResources = {
   name: string
   type: StuffType
   desc: string
+  /* 物品等阶，共9阶 */
+  level: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
   isStackable: boolean
   useOptions: readonly string[]
 }
@@ -23,6 +25,9 @@ export type GongfaResources = BaseStuffResources & {
   triggerFnKey: string
 }
 
+/**
+ * buff资源类型
+ */
 export type BuffResources = {
   name: string
   /**
@@ -30,7 +35,7 @@ export type BuffResources = {
    */
   args: Record<string, any>
   desc: () => string
-  isValid: (data:BuffData) => boolean
+  isValid: (data: BuffData) => boolean
   /**
    * buff持久化的初始数据
    */
@@ -40,6 +45,24 @@ export type BuffResources = {
    */
   triggerFnKey: string
   merge(oldData: Record<string, any>, newData: Record<string, any>): Record<string, any>
+}
+
+/**
+ * 灵药资源类型
+ */
+export type LingPlantResources = BaseStuffResources & {
+  isStackable: true
+  lingAttr: LingAttr
+  type: 'ling_plant'
+}
+
+/**
+ * 世界地点资源类型
+ * 世界地点指代一个世界中的地域
+ */
+export type WorldPlaceResources = {
+  name: string
+  desc: string
 }
 
 /**
@@ -131,25 +154,17 @@ export type PlayerGrowAttr = {
   xinJing: number
 }
 
+export type LingAttr = 'metal' | 'wood' | 'water' | 'fire' | 'soil'
+
 /**
  * 灵根
  * 灵根上限100点，这100点会随机分布在各个属性上。
  * 某个属性较突出，则代表为外在表象。
  * 灵根对角色的属性有着各项增幅
+ * 单个增益：金：爆发伤害；木：少防御，高恢复；水：中气血，中恢复；火：持续伤害；土：防御
  * 复合增益：火木：炼丹；火金：炼器；木土：种植；
  */
-export type LingRoot = {
-  /* 金：爆发伤害 */
-  metal: number
-  /* 木：少防御，高恢复 */
-  wood: number
-  /* 水：中气血，中恢复 */
-  water: number
-  /* 火：持续伤害 */
-  fire: number
-  /* 土：防御 */
-  soil: number
-}
+export type LingRoot = { [key in LingAttr]: number }
 
 /**
  * 角色状态属性

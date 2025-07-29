@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ClickText from '@/components/ClickText.vue'
-import { stuffResourcesLoader } from '@/game/base/ResCenter'
+import { STUFF_RES } from '@/game/base/ResCenter'
 import type { GongfaResources } from '@/game/base/Types'
 import { PlayerBagUseItemEvent } from '@/game/events/PlayerEvents'
 import { getWorld } from '@/game/Game'
@@ -23,7 +23,7 @@ const item = computed(() => {
     router.back()
     return undefined
   }
-  const res = stuffResourcesLoader.get(i.key)
+  const res = STUFF_RES.get(i.key)
   return {
     res: res,
     ...i,
