@@ -82,6 +82,11 @@ export const buffResourcesLoader = new ObjectResourcesLoader<BuffResources>().re
       return `每个周天的获得修为增加100%，剩余${this.args['count']}次`
     },
     isValid: (data) => data['count'] > 0,
+    merge(oldData, newData) {
+      return {
+        count: oldData['count'] + newData['count'],
+      }
+    },
   },
 })
 

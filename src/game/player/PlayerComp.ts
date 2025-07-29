@@ -1,5 +1,6 @@
 import { Component } from '@/framework'
 import type {
+  BuffData,
   GongfaPerData,
   PlayerCoreData,
   PlayerEventData,
@@ -101,6 +102,22 @@ export class PlayerCore extends Component {
     exp1 += baseExp * this.lv * 0.5
     return Math.round(exp1)
   }
+
+  addBuff(key: string, data: BuffData) {
+    this.data.buffs.set(key, data)
+  }
+
+  hasBuff(key: string) {
+    return this.data.buffs.has(key)
+  }
+
+  getBuff(key: string) {
+    return this.data.buffs.get(key)
+  }
+
+  removeBuff(key: string) {
+    this.data.buffs.delete(key)
+  }
 }
 
 /**
@@ -119,5 +136,4 @@ export class PlayerEffectCache extends Component {
   addEffect(effect: Effect) {
     this.effects.push(effect)
   }
-
 }

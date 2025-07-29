@@ -39,6 +39,7 @@ export type BuffResources = {
    * 效果触发器函数资源的key
    */
   triggerFnKey: string
+  merge(oldData: Record<string, any>, newData: Record<string, any>): Record<string, any>
 }
 
 /**

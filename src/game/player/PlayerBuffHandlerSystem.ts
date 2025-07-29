@@ -3,6 +3,7 @@ import { PlayerCore, PlayerEffectCache } from './PlayerComp'
 import { buffResourcesLoader, buffTriggerResourcesLoader } from '../base/ResCenter'
 import type { Effect } from './Effect'
 import { PlayerAddBuffEvent } from '../events/PlayerEvents'
+import { queryPlayerByUid } from '../query/Query'
 
 /**
  * 玩家buff处理系统
@@ -20,15 +21,17 @@ export class PlayerBuffHandlerSystem extends System {
 
   private onPlayerAddBuff(event: PlayerAddBuffEvent) {
     const { uid, buffKey } = event
-
-    // const playerCore = this.getComponent(PlayerCore, entity)
-    // const buffResources = buffResourcesLoader.get(buffKey)
-    // if (!buffResources) {
-    //   console.error(`buff资源不存在：${buffKey}`)
-    //   return
-    // }
-    // if (!buffResources.isValid(playerCore.data)) {
-    // }
+    const [player] = this.world!.query(queryPlayerByUid(uid))
+    const playerCore = player.getComponent(PlayerCore)!
+    const buffResources = buffResourcesLoader.get(buffKey)
+    const initData = buffResources.initData()
+    // 如果存在老buff数据，则需要对buff数据进行合并
+    const oldData = playerCore.getBuff(buffKey)
+    if (oldData) {
+      playerCore.addBuff(buffKey, buffResources.merge(oldData, initData))
+    } else {
+      playerCore.addBuff(buffKey, initData)
+    }
   }
 
   update(entities: Entity[]): void {

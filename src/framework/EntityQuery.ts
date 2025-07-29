@@ -352,6 +352,7 @@ export class EntityQuery {
       return result
     }
 
+    // 查询条件为空
     if (
       (!queryCriteria.all || queryCriteria.all.length === 0) &&
       (!queryCriteria.any || queryCriteria.any.length === 0) &&
