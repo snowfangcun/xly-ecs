@@ -56,7 +56,7 @@ export type LingPlantResources = BaseStuffResources & {
   type: 'ling_plant'
 }
 
-export type WorldLilianEvent = 'stuff_collect' | 'meet_enemy'
+export type WorldLilianEvent = 'stuff_collect' | 'meet_enemy' | 'empty'
 
 /**
  * 世界地点资源类型
@@ -65,6 +65,8 @@ export type WorldLilianEvent = 'stuff_collect' | 'meet_enemy'
 export type WorldPlaceResources = {
   name: string
   desc: string
+  /* 精力消耗 */
+  costEnergy: number
   /* 当地产物可探索获得 */
   stuffItems: {
     key: string
@@ -135,6 +137,7 @@ export type StuffBoxData = {
 export type MetaAttr = {
   hpMax: number
   mpMax: number
+  energyMax: number
   atk: number
   def: number
   spd: number

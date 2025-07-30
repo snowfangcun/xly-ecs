@@ -160,6 +160,7 @@ export const WORLD_PLACE_RES = new ObjectResourcesLoader<WorldPlaceResources>().
   fu_long_jian: {
     name: '伏龙涧',
     desc: '伏龙涧',
+    costEnergy: 5,
     stuffItems: [
       {
         key: 'chi_long_cao',
@@ -169,8 +170,12 @@ export const WORLD_PLACE_RES = new ObjectResourcesLoader<WorldPlaceResources>().
     ],
     events: [
       {
-        type: 'stuff_collect',
+        type: 'empty',
         rarity: 1,
+      },
+      {
+        type: 'stuff_collect',
+        rarity: 20,
       },
     ],
   },

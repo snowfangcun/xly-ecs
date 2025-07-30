@@ -10,12 +10,13 @@ export class PlayerMetaAttrComp extends Component {
     meta.atk = this.getAtk(core)
     meta.def = this.getDef(core)
     meta.mpMax = this.getMpMax(core)
+    meta.energyMax = 100
     meta.spd = 0
     meta.hit = 0
     return meta as MetaAttr
   }
 
-  getHpMax(core: PlayerCore): number {
+  private getHpMax(core: PlayerCore): number {
     const basicHp = [100, 300, 1000, 3000, 10000][core.lv]
     // 体魄属性对hp的换算：体魄值*乘数
     const lingPowerFactor = core.data.growAttr.lingPower * 8
@@ -25,7 +26,7 @@ export class PlayerMetaAttrComp extends Component {
     )
   }
 
-  getMpMax(core: PlayerCore): number {
+  private getMpMax(core: PlayerCore): number {
     const basicMp = [50, 150, 500, 1500, 5000][core.lv]
     // 体魄属性对mp的换算：体魄值*乘数
     const tiPoFactor = core.data.growAttr.tiPo * 0.5
@@ -35,7 +36,7 @@ export class PlayerMetaAttrComp extends Component {
     )
   }
 
-  getAtk(core: PlayerCore): number {
+  private getAtk(core: PlayerCore): number {
     const basicAtk = [20, 100, 200, 500, 1000][core.lv]
     const lingPowerFactor = core.data.growAttr.lingPower * 5
     const relamFactor = this.getRelamGrowFactor(core.realmLv)
@@ -44,7 +45,7 @@ export class PlayerMetaAttrComp extends Component {
     )
   }
 
-  getDef(core: PlayerCore): number {
+  private getDef(core: PlayerCore): number {
     const basicDef = [10, 80, 100, 200, 500][core.lv]
     const tiPoFactor = core.data.growAttr.tiPo * 5
     const relamFactor = this.getRelamGrowFactor(core.realmLv)

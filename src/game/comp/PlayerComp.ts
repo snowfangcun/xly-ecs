@@ -7,6 +7,7 @@ import type {
   PlayerGongfaData,
 } from '../base/Types'
 import type { Effect } from '../player/Effect'
+import { PlayerMetaAttrComp } from './PlayerMetaAttrComp'
 
 /**
  * 角色核心组件
@@ -118,6 +119,31 @@ export class PlayerCore extends Component {
 
   removeBuff(key: string) {
     this.data.buffs.delete(key)
+  }
+
+  /**
+   * 扣除精力
+   * @param val
+   * @returns
+   */
+  useEnergy(val: number): boolean {
+    if (this.data.state.energy < val) return false
+    this.data.state.energy -= val
+    return true
+  }
+
+  /**
+   * 增加精力
+   * @param val
+   * @returns
+   */
+  addEnergy(val: number) {
+    const meta = this.owner.getComponent(PlayerMetaAttrComp)!
+    if (this.data.state.energy + val > meta.metaAttr.energyMax) {
+      this.data.state.energy = meta.metaAttr.energyMax
+      return
+    }
+    this.data.state.energy += val
   }
 }
 
