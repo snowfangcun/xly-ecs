@@ -10,6 +10,7 @@ import { PlayerMetaAttrComp } from './comp/PlayerMetaAttrComp'
 import { PlayerBuffHandlerSystem } from './sys/PlayerBuffHandlerSystem'
 import { WORLD_PLACE_RES } from './base/ResCenter'
 import { WorldComp } from './comp/WorldComp'
+import { PlayerLilianSystem } from './sys/PlayerLilianSystem'
 
 let world: World
 
@@ -61,6 +62,7 @@ export function startGame() {
   //buff处理的优先级要比effect处理高
   world.addSystem(PlayerBuffHandlerSystem, 11)
   world.addSystem(PlayerBagSystem)
+  world.addSystem(PlayerLilianSystem)
   world.addSystem(PlayerEffectHandlerSystem, 10)
   world.addSystem(ViewDataRefreshSystem)
 

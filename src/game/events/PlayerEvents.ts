@@ -74,3 +74,15 @@ export class PlayerAddBuffEvent extends Event {
     super()
   }
 }
+
+/**
+ * 角色开始历练事件
+ */
+export class PlayerStartLilianEvent extends Event {
+  constructor(
+    public readonly uid: string = 'p1',
+    public readonly worldPlaceKey: string,
+  ) {
+    super()
+  }
+}

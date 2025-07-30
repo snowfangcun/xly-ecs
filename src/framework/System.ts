@@ -11,7 +11,7 @@ import { QueryCriteriaBuilder, type QueryCriteria } from './EntityQuery'
 export abstract class System {
   private _enabled = true
   private _priority = 0
-  public world: World | undefined = undefined
+  private _world: World | undefined = undefined
   private subscriptions: Subscription[] = []
   public readonly queryCriteriaBuilder = new QueryCriteriaBuilder()
 
@@ -21,6 +21,15 @@ export abstract class System {
    */
   constructor(public readonly requiredComponents: QueryCriteria = {}) {
     this.queryCriteriaBuilder.fromQueryCriteria(requiredComponents)
+  }
+
+  get world(): World {
+    if (!this._world) throw new Error('World not set')
+    return this._world
+  }
+
+  set world(value: World) {
+    this._world = value
   }
 
   /**
@@ -63,7 +72,7 @@ export abstract class System {
   onRemovedFromWorld(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe())
     this.subscriptions = []
-    this.world = undefined
+    this._world = undefined
   }
 
   /**
@@ -75,8 +84,8 @@ export abstract class System {
     eventType: EventType<T>,
     callback: (event: T) => void,
   ): Subscription | undefined {
-    const subscription = this.world!.event$.pipe(
-      filter((event) => event instanceof eventType),
+    const subscription = this._world!.event$.pipe(
+      filter((event): event is T => event instanceof eventType),
       map((event) => event as T),
     ).subscribe((event) => {
       try {
@@ -98,7 +107,7 @@ export abstract class System {
    * @param mode 事件处理模式，默认为即时处理
    */
   eventDispatch(event: Event, mode: EventDispatchMode = EventDispatchMode.Immediate): void {
-    this.world?.emitEvent(event, mode)
+    this._world?.emitEvent(event, mode)
   }
 
   /**

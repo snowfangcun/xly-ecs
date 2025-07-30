@@ -102,7 +102,6 @@ export class World {
       )
       // 调用插件钩子
       this.pluginManager.onSystemRemoved(s.system)
-      s.system.world = undefined
     }
     return this
   }
