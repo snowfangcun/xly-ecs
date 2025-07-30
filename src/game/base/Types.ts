@@ -67,6 +67,8 @@ export type WorldPlaceResources = {
   desc: string
   /* 精力消耗 */
   costEnergy: number
+  /* 最大可历练事件，单位s */
+  maxTime: number
   /* 当地产物可探索获得 */
   stuffItems: {
     key: string

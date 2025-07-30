@@ -161,6 +161,7 @@ export const WORLD_PLACE_RES = new ObjectResourcesLoader<WorldPlaceResources>().
     name: '伏龙涧',
     desc: '伏龙涧',
     costEnergy: 5,
+    maxTime: 60 * 30,
     stuffItems: [
       {
         key: 'chi_long_cao',
