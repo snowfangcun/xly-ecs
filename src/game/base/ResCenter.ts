@@ -8,7 +8,7 @@ import type {
   GongfaPerData,
   GongfaResources,
   LingPlantResources,
-  WorldPlaceResources,
+  WorldMapResources,
 } from './Types'
 
 const EXECUTE_CYCLE = 'EXECUTE_CYCLE'
@@ -156,7 +156,7 @@ export const STUFF_RES = new ObjectResourcesLoader<BaseStuffResources>()
 /**
  * 世界地点资源
  */
-export const WORLD_PLACE_RES = new ObjectResourcesLoader<WorldPlaceResources>().registerBatch({
+export const WORLD_MAP_RES = new ObjectResourcesLoader<WorldMapResources>().registerBatch({
   fu_long_jian: {
     name: '伏龙涧',
     desc: '伏龙涧',

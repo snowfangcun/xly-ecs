@@ -27,5 +27,10 @@ export class ViewDataRefreshSystem extends System {
     this.gameStore.metaAttr = { ...metaAttr.metaAttr }
     if (core.gongfa) this.gameStore.gongfa = { ...core.gongfa }
     this.gameStore.currentEvent = { ...core.currentEvent }
+
+    /* 刷新历练 */
+    
+
+
   }
 }

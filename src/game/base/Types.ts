@@ -62,7 +62,7 @@ export type WorldLilianEvent = 'stuff_collect' | 'meet_enemy' | 'empty'
  * 世界地点资源类型
  * 世界地点指代一个世界中的地域
  */
-export type WorldPlaceResources = {
+export type WorldMapResources = {
   name: string
   desc: string
   /* 精力消耗 */

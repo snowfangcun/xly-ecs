@@ -1,12 +1,13 @@
 import { Entity, System } from '@/framework'
-import { WORLD_PLACE_RES } from '../base/ResCenter'
-import type { WorldPlaceResources } from '../base/Types'
+import { STUFF_RES, WORLD_MAP_RES } from '../base/ResCenter'
+import type { WorldMapResources } from '../base/Types'
 import { PlayerCore } from '../comp/PlayerComp'
 import { WorldLilianRoom } from '../comp/WorldComp'
 import { PlayerStartLilianEvent } from '../events/PlayerEvents'
 import { queryPlayerByUid } from '../query/Query'
 import { StuffBox } from '../stuff/StuffComp'
 import { weightedRandom } from '../tool/MathTools'
+import { useGameStore } from '@/stores/game'
 
 /**
  * 玩家历练系统
@@ -25,7 +26,7 @@ export class PlayerLilianSystem extends System {
     const core = player.getComponent(PlayerCore)!
     if (core.currentEvent.type !== 'none') throw new Error(`角色${event.uid}正在执行其他事件`)
 
-    const res = WORLD_PLACE_RES.get(event.worldPlaceKey)
+    const res = WORLD_MAP_RES.get(event.worldPlaceKey)
 
     if (!core.useEnergy(res.costEnergy)) {
       throw new Error(`角色${event.uid}体力不足${res.costEnergy}点`)
@@ -51,7 +52,9 @@ export class PlayerLilianSystem extends System {
         // 时间已满，应当进入历练结算流程
       }
 
-      const worldBlockRes = WORLD_PLACE_RES.get(room.worldPlaceKey)
+      room.addTimeCount(1)
+
+      const worldBlockRes = WORLD_MAP_RES.get(room.mapKey)
       // 随机抽取历练事件
       const eventIndex = weightedRandom(worldBlockRes.events)
       const selectedEvent = worldBlockRes.events[eventIndex]
@@ -64,7 +67,7 @@ export class PlayerLilianSystem extends System {
         /* 暂无实现 */
       }
 
-      room.addTimeCount(1)
+      if (room.roomOwnerUid === 'p1') this.refreshView(entity)
     })
   }
 
@@ -73,7 +76,7 @@ export class PlayerLilianSystem extends System {
    * @param e
    * @param res
    */
-  private onSelectStuffCollect(e: Entity, res: Readonly<WorldPlaceResources>) {
+  private onSelectStuffCollect(e: Entity, res: Readonly<WorldMapResources>) {
     // 按稀有度权重随机抽取一个物品
     const itemIndex = weightedRandom(res.stuffItems)
     const selectedItem = res.stuffItems[itemIndex]
@@ -82,5 +85,24 @@ export class PlayerLilianSystem extends System {
     // 加入暂存区
     const stuffBox = e.getComponent(StuffBox)!
     stuffBox.addItem(selectedItem.key, count)
+    // 生成文本
+    const stuffRes = STUFF_RES.get(selectedItem.key)
+    const text = `拾取了${count}个${stuffRes.name}`
+    const room = e.getComponent(WorldLilianRoom)!
+    room.msg.push(text)
+  }
+
+  /**
+   * 刷新视图状态数据
+   * @param e
+   */
+  private refreshView(e: Entity) {
+    const gameStore = useGameStore()
+    const room = e.getComponent(WorldLilianRoom)!
+    gameStore.lilianInfo = {
+      mapKey: room.mapKey,
+      timeCount: room.timeCount,
+      messages: [...room.msg],
+    }
   }
 }

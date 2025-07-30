@@ -20,6 +20,11 @@ export const useGameStore = defineStore('game', () => {
   const currentEvent = ref<PlayerEventData>()
   const state = ref<Partial<StateProps>>()
   const metaAttr = ref<Partial<MetaAttr>>()
+  const lilianInfo = ref<{
+    mapKey: string
+    timeCount: number
+    messages: string[]
+  }>()
 
-  return { name, exp, expMax, lv, bag, gongfa, currentEvent, state, metaAttr }
+  return { name, exp, expMax, lv, bag, gongfa, currentEvent, state, metaAttr, lilianInfo }
 })

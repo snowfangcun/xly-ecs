@@ -8,7 +8,7 @@ import { DebugPlugin } from './plugins/DebugPlugin'
 import { PlayerEffectHandlerSystem } from './sys/PlayerEffectHandlerSystem'
 import { PlayerMetaAttrComp } from './comp/PlayerMetaAttrComp'
 import { PlayerBuffHandlerSystem } from './sys/PlayerBuffHandlerSystem'
-import { WORLD_PLACE_RES } from './base/ResCenter'
+import { WORLD_MAP_RES } from './base/ResCenter'
 import { WorldComp } from './comp/WorldComp'
 import { PlayerLilianSystem } from './sys/PlayerLilianSystem'
 
@@ -76,9 +76,9 @@ export function startGame() {
  * @param world
  */
 function loadWorldPlace(world: World) {
-  WORLD_PLACE_RES.getAllKeys().forEach((key) => {
+  WORLD_MAP_RES.getAllKeys().forEach((key) => {
     const worldPlace = world.createEntity(['world_place'])
-    const res = WORLD_PLACE_RES.get(key)
+    const res = WORLD_MAP_RES.get(key)
     worldPlace.addComponent(WorldComp, key, res)
   })
 }
