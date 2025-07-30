@@ -153,13 +153,23 @@ export const STUFF_RES = new ObjectResourcesLoader<BaseStuffResources>()
   .merge(GONGFA_RES, LING_PLANT_RES)
   .toExport()
 
+/**
+ * 世界地点资源
+ */
 export const WORLD_PLACE_RES = new ObjectResourcesLoader<WorldPlaceResources>().registerBatch({
   fu_long_jian: {
     name: '伏龙涧',
     desc: '伏龙涧',
-    items: [
+    stuffItems: [
       {
         key: 'chi_long_cao',
+        rarity: 1,
+        maxCount: 1,
+      },
+    ],
+    events: [
+      {
+        type: 'stuff_collect',
         rarity: 1,
       },
     ],

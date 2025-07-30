@@ -8,7 +8,7 @@ import {
 } from '../events/PlayerEvents'
 import { queryP1 } from '../query/Query'
 import { StuffBox } from '../stuff/StuffComp'
-import { PlayerCore } from './PlayerComp'
+import { PlayerCore } from '../comp/PlayerComp'
 
 export class PlayerBagSystem extends System {
   constructor() {

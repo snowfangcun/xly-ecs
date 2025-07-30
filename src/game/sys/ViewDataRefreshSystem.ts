@@ -1,8 +1,8 @@
 import { Entity, System } from '@/framework'
-import { P1, PlayerCore } from './PlayerComp'
+import { P1, PlayerCore } from '../comp/PlayerComp'
 import { useGameStore } from '@/stores/game'
 import { StuffBox } from '../stuff/StuffComp'
-import { PlayerMetaAttrComp } from './PlayerMetaAttrComp'
+import { PlayerMetaAttrComp } from '../comp/PlayerMetaAttrComp'
 
 export class ViewDataRefreshSystem extends System {
   private readonly gameStore = useGameStore()

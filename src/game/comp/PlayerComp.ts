@@ -6,7 +6,7 @@ import type {
   PlayerEventData,
   PlayerGongfaData,
 } from '../base/Types'
-import type { Effect } from './Effect'
+import type { Effect } from '../player/Effect'
 
 /**
  * 角色核心组件

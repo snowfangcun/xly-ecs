@@ -2,7 +2,7 @@ import { Entity, System } from '@/framework'
 import { GONGFA_RES, GONGFA_TRIGGER_RES } from '../base/ResCenter'
 import { PlayerFinishXiulianEvent, PlayerStartXiulianEvent } from '../events/PlayerEvents'
 import { queryPlayerByUid } from '../query/Query'
-import { PlayerCore, PlayerEffectCache } from './PlayerComp'
+import { PlayerCore, PlayerEffectCache } from '../comp/PlayerComp'
 
 /**
  * 角色功法系统

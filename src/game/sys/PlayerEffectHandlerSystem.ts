@@ -1,6 +1,6 @@
 import { Entity, System } from '@/framework'
-import { EffectAddExp } from './Effect'
-import { PlayerCore, PlayerEffectCache } from './PlayerComp'
+import { EffectAddExp } from '../player/Effect'
+import { PlayerCore, PlayerEffectCache } from '../comp/PlayerComp'
 
 /**
  * 玩家效果处理系统

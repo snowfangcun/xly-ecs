@@ -1,7 +1,7 @@
 import { Entity, System } from '@/framework'
-import { PlayerCore, PlayerEffectCache } from './PlayerComp'
+import { PlayerCore, PlayerEffectCache } from '../comp/PlayerComp'
 import { BUFF_RES, BUFF_TRIGGER_RES } from '../base/ResCenter'
-import type { Effect } from './Effect'
+import type { Effect } from '../player/Effect'
 import { PlayerAddBuffEvent } from '../events/PlayerEvents'
 import { queryPlayerByUid } from '../query/Query'
 

@@ -64,6 +64,14 @@ export abstract class BaseResourcesLoader<T> implements IResourcesLoader<T> {
     return res
   }
 
+  getAllKeys(): string[] {
+    return Array.from(this.dic.keys())
+  }
+
+  getAll(): T[] {
+    return Array.from(this.dic.values())
+  }
+
   toExport(): IResourcesLoader<T> {
     return this
   }

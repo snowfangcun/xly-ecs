@@ -1,5 +1,5 @@
 import { QueryCriteriaBuilder } from '@/framework'
-import { P1, PlayerCore } from '../player/PlayerComp'
+import { P1, PlayerCore } from '../comp/PlayerComp'
 
 export const queryP1 = new QueryCriteriaBuilder().with(P1).build()
 export const queryPlayerByUid = new QueryCriteriaBuilder()

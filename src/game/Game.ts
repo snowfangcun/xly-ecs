@@ -1,13 +1,15 @@
 import { World } from '@/framework'
-import { P1, PlayerCore, PlayerEffectCache } from './player/PlayerComp'
-import { GongfaSystem } from './player/GongfaSystem'
+import { P1, PlayerCore, PlayerEffectCache } from './comp/PlayerComp'
+import { GongfaSystem } from './sys/GongfaSystem'
 import { StuffBox } from './stuff/StuffComp'
-import { ViewDataRefreshSystem } from './player/ViewDataRefreshSystem'
-import { PlayerBagSystem } from './player/PlayerBagSystem'
+import { ViewDataRefreshSystem } from './sys/ViewDataRefreshSystem'
+import { PlayerBagSystem } from './sys/PlayerBagSystem'
 import { DebugPlugin } from './plugins/DebugPlugin'
-import { PlayerEffectHandlerSystem } from './player/PlayerEffectHandlerSystem'
-import { PlayerMetaAttrComp } from './player/PlayerMetaAttrComp'
-import { PlayerBuffHandlerSystem } from './player/PlayerBuffHandlerSystem'
+import { PlayerEffectHandlerSystem } from './sys/PlayerEffectHandlerSystem'
+import { PlayerMetaAttrComp } from './comp/PlayerMetaAttrComp'
+import { PlayerBuffHandlerSystem } from './sys/PlayerBuffHandlerSystem'
+import { WORLD_PLACE_RES } from './base/ResCenter'
+import { WorldComp } from './comp/WorldComp'
 
 let world: World
 
@@ -17,6 +19,8 @@ export function startGame() {
 
   /* 安装插件 */
   world.installPlugin(DebugPlugin, { name: 'DebugPlugin', description: '调试插件' })
+
+  loadWorldPlace(world)
 
   const playerEntity = world.createEntity()
   playerEntity.addComponent(P1)
@@ -63,6 +67,18 @@ export function startGame() {
   setInterval(() => {
     world.update(1)
   }, 1000)
+}
+
+/**
+ * 加载世界地点实体
+ * @param world
+ */
+function loadWorldPlace(world: World) {
+  WORLD_PLACE_RES.getAllKeys().forEach((key) => {
+    const worldPlace = world.createEntity(['world_place'])
+    const res = WORLD_PLACE_RES.get(key)
+    worldPlace.addComponent(WorldComp, key, res)
+  })
 }
 
 export function getWorld() {

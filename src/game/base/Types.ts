@@ -56,6 +56,8 @@ export type LingPlantResources = BaseStuffResources & {
   type: 'ling_plant'
 }
 
+export type WorldLilianEvent = 'stuff_collect' | 'meet_enemy'
+
 /**
  * 世界地点资源类型
  * 世界地点指代一个世界中的地域
@@ -64,9 +66,15 @@ export type WorldPlaceResources = {
   name: string
   desc: string
   /* 当地产物可探索获得 */
-  items: {
+  stuffItems: {
     key: string
     /* 稀有度 */
+    rarity: number
+    /* 最大可获得数量 */
+    maxCount: number
+  }[]
+  events: {
+    type: WorldLilianEvent
     rarity: number
   }[]
 }
